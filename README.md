@@ -1,6 +1,6 @@
-# Puffix IoC Configuration
+# Puffix CQRS
 
-Extension for including Microsoft.Extensions.Configuration in the Puffix IoC library.
+CQRS framework implementation.
 
-[![NuGet version (Puffix.IoC.Configuration)](https://img.shields.io/nuget/v/Puffix.IoC.Configuration.svg?style=flat-square)](https://www.nuget.org/packages/Puffix.IoC.Configuration/)
-[![Build status](https://github.com/EhRom/Puffix.IoC.Configuration/workflows/.NET%20Core/badge.svg)](https://github.com/EhRom/Puffix.IoC.Configuration/actions?query=workflow%3A%22.NET+Core%22)
+[![NuGet version (Puffix.CQRS)](https://img.shields.io/nuget/v/Puffix.CQRS.svg?style=flat-square)](https://www.nuget.org/packages/Puffix.CQRS/)
+[![Build status](https://github.com/EhRom/Puffix.CQRS/workflows/.NET%20Core/badge.svg)](https://github.com/EhRom/Puffix.CQRS/actions?query=workflow%3A%22.NET+Core%22)
