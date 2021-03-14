@@ -2,10 +2,34 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Puffix.io - Romain Ehret</Authors>
+    <Company>Puffix.io - Romain Ehret</Company>
+    <Description>CQRS framework implementation.</Description>
+    <Copyright>Copyright 2021 (c) Puffix / Romain Ehret. All rights reserved.</Copyright>
+    <PackageLicenseFile>Licence.txt</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/EhRom/Puffix.Cqrs</PackageProjectUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/EhRom/Puffix.Cqrs</RepositoryUrl>
+    <PackageTags>CQRS Puffix Framework</PackageTags>
+    <PackageReleaseNotes>CQRS framework implementation.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Resources\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="Licence.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
