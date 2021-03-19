@@ -15,6 +15,7 @@
     <RepositoryUrl>https://github.com/EhRom/Puffix.Cqrs</RepositoryUrl>
     <PackageTags>CQRS Puffix Framework</PackageTags>
     <PackageReleaseNotes>CQRS framework implementation.</PackageReleaseNotes>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
