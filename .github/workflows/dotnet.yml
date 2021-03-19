@@ -24,4 +24,4 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: Publish Nuget Package
-      run: dotnet nuget push /home/runner/work/Puffix.Cqrs/Puffix.Cqrs/Puffix.Cqrs/bin/Release/Puffix.Cqrs.1.0.0.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      run: dotnet nuget push /home/runner/work/Puffix.Cqrs/Puffix.Cqrs/Puffix.Cqrs/bin/Release/Puffix.Cqrs.1.0.1.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate

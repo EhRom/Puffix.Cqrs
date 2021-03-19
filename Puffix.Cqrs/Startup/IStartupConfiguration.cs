@@ -1,9 +1,6 @@
 ﻿using Puffix.Cqrs.Commands;
 using Puffix.Cqrs.Context;
 using Puffix.Cqrs.Queries;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Puffix.Cqrs.Startup
 {
