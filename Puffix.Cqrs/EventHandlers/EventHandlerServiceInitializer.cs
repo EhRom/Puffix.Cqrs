@@ -90,7 +90,7 @@ namespace Puffix.Cqrs.EventHandlers
                     indexType = null;
 
                     // Extraction de la méthode de gestion de l'évènement dans l'implémentation de l'intercepteur.
-                    MethodInfo method = implementationType.GetRuntimeMethod("Handle", new[] { eventType });
+                    MethodInfo method = implementationType.GetRuntimeMethod("HandleAsync", new[] { eventType });
 
                     // Définition de la fonction pour appeler la méthode de gestion de l'évènement.
                     handlingFunction = (aggregate, handledEvent) =>
@@ -104,7 +104,7 @@ namespace Puffix.Cqrs.EventHandlers
                     indexType = contractGenericArguments.ElementAt(2);
 
                     // Extraction de la méthode de gestion de l'évènement dans l'implémentation de l'intercepteur.
-                    MethodInfo method = implementationType.GetRuntimeMethod("Handle", new[] { agregateType, eventType });
+                    MethodInfo method = implementationType.GetRuntimeMethod("HandleAsync", new[] { agregateType, eventType });
 
                     // Définition de la fonction pour appeler la méthode de gestion de l'évènement.
                     handlingFunction = (aggregate, handledEvent) =>
