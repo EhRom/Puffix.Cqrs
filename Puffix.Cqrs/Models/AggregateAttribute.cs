@@ -6,7 +6,6 @@ namespace Puffix.Cqrs.Models
     /// Attribut pour détecter les contrats de modèles de données (utilisé pour la création automatique des repertoires de données).
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface)]
-
     public class AggregateAttribute : Attribute
     { }
 }

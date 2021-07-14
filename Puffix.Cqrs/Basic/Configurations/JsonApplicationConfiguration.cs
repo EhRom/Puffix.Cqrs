@@ -1,5 +1,6 @@
 ﻿using Puffix.Cqrs.Configurations;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -17,38 +18,41 @@ namespace Puffix.Cqrs.Basic.Configurations
         /// </summary>
         public override void EnsureIsLoaded()
         {
-            if (parameters == null)
+            parameters ??= LoadParameters();
+        }
+
+        private IReadOnlyDictionary<string, IConfigurationElement> LoadParameters()
+        {
+            string loadedContent;
+            if (configurationFileLoader != null)
             {
-                string loadedContent;
-                if (configurationFileLoader != null)
-                {
-                    using Stream stream = configurationFileLoader(configurationFile);
-                    using StreamReader reader = new StreamReader(stream);
+                using Stream stream = configurationFileLoader(configurationFile);
+                using StreamReader reader = new StreamReader(stream);
 
-                    // Appel synchrone, car l'appel asynchrone peut ne pas aboutir.
-                    loadedContent = reader.ReadToEnd();
-                }
-                else
-                {
-                    using StreamReader reader = File.OpenText(configurationFile);
-                    loadedContent = reader.ReadToEnd();
-                }
-
-                JsonSerializerOptions options = new JsonSerializerOptions()
-                {
-                    AllowTrailingCommas = true,
-                };
-                ApplicationConfigurationModel baseConfiguration = JsonSerializer.Deserialize<ApplicationConfigurationModel>(loadedContent, options);
-                loadedContent = null;
-
-                foreach (ConfigurationElement parameter in baseConfiguration.Parameters)
-                {
-                    if (parameter != null && parameter.Value is JsonElement parameterValue)
-                        parameter.Value = JsonSerializer.Deserialize(parameterValue.GetRawText(), Type.GetType(parameter.ElementType));
-                }
-
-                parameters = new ReadOnlyDictionary<string, IConfigurationElement>(baseConfiguration.Parameters.ToDictionary(k => k.Name, v => v as IConfigurationElement));
+                // Appel synchrone, car l'appel asynchrone peut ne pas aboutir.
+                loadedContent = reader.ReadToEnd();
             }
+            else
+            {
+                using StreamReader reader = File.OpenText(configurationFile);
+                loadedContent = reader.ReadToEnd();
+            }
+
+            JsonSerializerOptions options = new JsonSerializerOptions()
+            {
+                AllowTrailingCommas = true,
+            };
+
+            ApplicationConfigurationModel baseConfiguration = JsonSerializer.Deserialize<ApplicationConfigurationModel>(loadedContent, options);
+            loadedContent = null;
+
+            foreach (ConfigurationElement parameter in baseConfiguration.Parameters)
+            {
+                if (parameter?.Value is JsonElement parameterValue)
+                    parameter.Value = JsonSerializer.Deserialize(parameterValue.GetRawText(), Type.GetType(parameter.ElementType));
+            }
+
+            return new ReadOnlyDictionary<string, IConfigurationElement>(baseConfiguration.Parameters.ToDictionary(k => k.Name, v => v as IConfigurationElement));
         }
     }
 }
