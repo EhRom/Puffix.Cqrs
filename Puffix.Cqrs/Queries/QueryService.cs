@@ -66,45 +66,38 @@ namespace Puffix.Cqrs.Queries
         private async Task<IWrittableResult<ResultT>> ProcessInternal<QueryT, ResultT>(QueryT query, Func<QueryT, ResultT> resultAccessor)
             where QueryT : IQuery
         {
-            try
+            // Initialisation du résultat.
+            IWrittableResult<ResultT> result = new ExecutionResult<ResultT>();
+
+            // Contrôles des paramètres et du contexte.
+            IChecker contextChecker = new ContextChecker(result);
+            IChecker parametersChecker = new ParametersChecker(result);
+            query.CheckContext(applicationContext, contextChecker);
+            query.CheckParameters(parametersChecker);
+
+            // Contrôle de la possiblité d'exécuter la commande. Si non, on indique que l'exécution a échoué.
+            if (result.ValidContext && result.ValidParameters)
             {
-                // Initialisation du résultat.
-                IWrittableResult<ResultT> result = new ExecutionResult<ResultT>();
-
-                // Contrôles des paramètres et du contexte.
-                IChecker contextChecker = new ContextChecker(result);
-                IChecker parametersChecker = new ParametersChecker(result);
-                query.CheckContext(applicationContext, contextChecker);
-                query.CheckParameters(parametersChecker);
-
-                // Contrôle de la possiblité d'exécuter la commande. Si non, on indique que l'exécution a échoué.
-                if (result.ValidContext && result.ValidParameters)
+                try
                 {
-                    try
-                    {
-                        // Exécution de la commande.
-                        await query.ExecuteAsync(executionContext, applicationContext);
-                        result.SetSucces(true);
-                    }
-                    catch (Exception error)
-                    {
-                        result.AddError(error);
-                        result.SetSucces(false);
-                    }
-
-                    // Si la commande a reussi, affectation du résultat.
-                    if (result.Success && query is IQuery<ResultT>)
-                        result.SetResult(resultAccessor(query));
+                    // Exécution de la commande.
+                    await query.ExecuteAsync(executionContext, applicationContext);
+                    result.SetSucces(true);
                 }
-                else
+                catch (Exception error)
+                {
+                    result.AddError(error);
                     result.SetSucces(false);
+                }
 
-                return result;
+                // Si la commande a reussi, affectation du résultat.
+                if (result.Success && query is IQuery<ResultT>)
+                    result.SetResult(resultAccessor(query));
             }
-            catch (Exception error)
-            {
-                throw error;
-            }
+            else
+                result.SetSucces(false);
+
+            return result;
         }
     }
 }
