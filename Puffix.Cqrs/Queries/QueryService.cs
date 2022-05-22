@@ -52,7 +52,7 @@ namespace Puffix.Cqrs.Queries
         public async Task<IResult<ResultT>> ProcessAsync<ResultT>(IQuery<ResultT> query)
         {
             // Execution de la requête.
-            return await ProcessInternal(query as IQuery, _ => (_ as IQuery<ResultT>).Result);
+            return await ProcessInternal(query as IQuery, _ => ((IQuery<ResultT>)_).Result);
         }
 
         /// <summary>

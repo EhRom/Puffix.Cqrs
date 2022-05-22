@@ -50,7 +50,13 @@ namespace Puffix.Cqrs.Commands
         public async Task<IResult<ResultT>> ProcessAsync<ResultT>(ICommand<ResultT> command)
         {
             // Execution de la commande.
-            return await ProcessInternalAsync(command as ICommand, _ => (_ as ICommand<ResultT>).Result);
+            return await ProcessInternalAsync(command as ICommand, _ =>
+            {
+                if (_ == null)
+                    throw new ArgumentNullException($"The {nameof(command)} is not set or does not implement ICommand.");
+
+                return ((ICommand<ResultT>)_).Result;
+            });
         }
 
         /// <summary>

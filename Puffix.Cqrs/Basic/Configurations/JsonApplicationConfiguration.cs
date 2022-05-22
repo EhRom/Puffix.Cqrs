@@ -46,10 +46,19 @@ namespace Puffix.Cqrs.Basic.Configurations
             ApplicationConfigurationModel baseConfiguration = JsonSerializer.Deserialize<ApplicationConfigurationModel>(loadedContent, options);
             loadedContent = null;
 
+            if (baseConfiguration == null)
+                throw new ArgumentNullException($"The configuration content does not match the required format.");
+
             foreach (ConfigurationElement parameter in baseConfiguration.Parameters)
             {
-                if (parameter?.Value is JsonElement parameterValue)
-                    parameter.Value = JsonSerializer.Deserialize(parameterValue.GetRawText(), Type.GetType(parameter.ElementType));
+                if (parameter != null && parameter?.Value is JsonElement parameterValue)
+                {
+                    Type returnType = Type.GetType(parameter.ElementType);
+                    if (returnType == null)
+                        throw new ArgumentNullException($"The type {parameter.ElementType} type does not exists.");
+
+                    parameter.Value = JsonSerializer.Deserialize(parameterValue.GetRawText(), returnType);
+                }
             }
 
             return new ReadOnlyDictionary<string, IConfigurationElement>(baseConfiguration.Parameters.ToDictionary(k => k.Name, v => v as IConfigurationElement));

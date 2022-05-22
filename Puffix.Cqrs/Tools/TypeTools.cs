@@ -47,6 +47,9 @@ namespace Puffix.Cqrs.Tools
             else
             {
                 ancestors = GetAllAncestorsForType(type.BaseType) as IList<Type>;
+                if (ancestors == null)
+                    throw new ArgumentNullException("The GetAllAncestorsForType method should not return null values.");
+
                 ancestors.Add(type);
             }
 

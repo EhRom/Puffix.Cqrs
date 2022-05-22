@@ -75,7 +75,7 @@ namespace Puffix.Cqrs.Executors
         /// <param name="error">Error.</param>
         public void AddError(Exception error)
         {
-            (Errors as List<Exception>).Add(error);
+            ((List<Exception>)Errors).Add(error);
         }
     }
 

@@ -14,6 +14,8 @@ namespace Puffix.Cqrs.EventHandlers
     /// </summary>
     public class EventHandlerServiceInitializer : IEventHandlerServiceInitializer
     {
+        private const string HANDLE_ASYNC_METHOD_NAME = "HandleAsync";
+
         /// <summary>
         /// Fonction pour la résolution de classes via le conteneur IoC.
         /// </summary>
@@ -90,7 +92,10 @@ namespace Puffix.Cqrs.EventHandlers
                     indexType = null;
 
                     // Extraction de la méthode de gestion de l'évènement dans l'implémentation de l'intercepteur.
-                    MethodInfo method = implementationType.GetRuntimeMethod("HandleAsync", new[] { eventType });
+                    MethodInfo method = implementationType.GetRuntimeMethod(HANDLE_ASYNC_METHOD_NAME, new[] { eventType });
+
+                    if (method == null)
+                        throw new ArgumentNullException($"The method {HANDLE_ASYNC_METHOD_NAME} is not found in the {eventType} class.");
 
                     // Définition de la fonction pour appeler la méthode de gestion de l'évènement.
                     handlingFunction = (aggregate, handledEvent) =>
@@ -104,7 +109,10 @@ namespace Puffix.Cqrs.EventHandlers
                     indexType = contractGenericArguments.ElementAt(2);
 
                     // Extraction de la méthode de gestion de l'évènement dans l'implémentation de l'intercepteur.
-                    MethodInfo method = implementationType.GetRuntimeMethod("HandleAsync", new[] { agregateType, eventType });
+                    MethodInfo method = implementationType.GetRuntimeMethod(HANDLE_ASYNC_METHOD_NAME, new[] { agregateType, eventType });
+
+                    if (method == null)
+                        throw new ArgumentNullException($"The method {HANDLE_ASYNC_METHOD_NAME} is not found in the {eventType} class.");
 
                     // Définition de la fonction pour appeler la méthode de gestion de l'évènement.
                     handlingFunction = (aggregate, handledEvent) =>
