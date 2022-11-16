@@ -13,14 +13,15 @@ namespace Puffix.Cqrs.Repositories
     /// </summary>
     /// <typeparam name="AggregateT">Type de l'agrégat.</typeparam>
     /// <typeparam name="IndexT">Type de l'index.</typeparam>
-    public class Repository<AggregateT, IndexT> : IRepository<AggregateT, IndexT>
+    public class Repository<AggregateImplementationT, AggregateT, IndexT> : IRepository<AggregateImplementationT, AggregateT, IndexT>
+         where AggregateImplementationT : class, AggregateT
          where AggregateT : IAggregate<IndexT>
          where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>
     {
         /// <summary>
         /// Fournisseur de répertoire de données.
         /// </summary>
-        private readonly IRepositoryProvider<AggregateT, IndexT> provider;
+        private readonly IRepositoryProvider<AggregateImplementationT, AggregateT, IndexT> provider;
 
         /// <summary>
         /// Type de l'agrégat.
@@ -48,7 +49,7 @@ namespace Puffix.Cqrs.Repositories
             AggregateInfo aggregateInfo = repositoryService.GetInfo<AggregateT>();
 
             // Récupération du fournisseur de données pour l'agrégat.
-            provider = repositoriesConfiguration.GetRepositoryProvider<AggregateT, IndexT>(aggregateInfo);
+            provider = repositoriesConfiguration.GetRepositoryProvider<AggregateImplementationT, AggregateT, IndexT>(aggregateInfo);
         }
 
         /// <summary>
@@ -86,16 +87,23 @@ namespace Puffix.Cqrs.Repositories
         /// </summary>
         /// <param name="id">Identifiant de l'agrégat.</param>
         /// <returns>Agrégat ou valeur nulle à défaut.</returns>
+#if NET6_0_OR_GREATER
+        public async Task<AggregateT?> GetByIdOrDefaultAsync(IndexT id)
+        {
+            return await provider.GetByIdOrDefaultAsync(id);
+        }
+#else
         public async Task<AggregateT> GetByIdOrDefaultAsync(IndexT id)
         {
             return await provider.GetByIdOrDefaultAsync(id);
         }
+#endif
 
         /// <summary>
         /// Récupération d'un énumérateur.
         /// </summary>
         /// <returns>Enumérateur.</returns>
-        public IEnumerator<AggregateT> GetEnumerator()
+        public IEnumerator<AggregateImplementationT> GetEnumerator()
         {
             return provider.GetEnumerator();
         }

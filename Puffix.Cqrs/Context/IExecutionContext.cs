@@ -5,22 +5,22 @@ using Puffix.Cqrs.Repositories;
 namespace Puffix.Cqrs.Context
 {
     /// <summary>
-    /// Contexte d'exécution de la commande.
+    /// Execution context contract.
     /// </summary>
     public interface IExecutionContext
     {
         /// <summary>
-        /// Service de gestion des évènements.
+        /// Event management service.
         /// </summary>
         IEventService EventService { get; }
 
         /// <summary>
-        /// Service pour l'accès aux répertoires de données.
+        /// Repository management service.
         /// </summary>
         IRepositoryService RepositoryService { get; }
 
         /// <summary>
-        /// Service de gestion de la configuration de l'application.
+        /// Application configuration management service.
         /// </summary>
         IApplicationConfigurationService ConfigurationService { get; }
     }

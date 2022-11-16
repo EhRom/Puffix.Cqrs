@@ -85,20 +85,20 @@ namespace Puffix.Cqrs.Repositories
             aggregateInfoContainer[contractType] = aggregatenfo;
 
             // Création des types génériques.
-            Type repositoryContract = typeof(IRepository<,>).MakeGenericType(contractType, indexType);
-            Type repositoryImplementation = typeof(Repository<,>).MakeGenericType(contractType, indexType);
+            Type repositoryContract = typeof(IRepository<,,>).MakeGenericType(implementationType, contractType, indexType);
+            Type repositoryImplementation = typeof(Repository<,,>).MakeGenericType(implementationType, contractType, indexType);
 
             // Enregistrement de la correspondance dans le conteneur IoC.
             registerForIoc(repositoryContract, repositoryImplementation);
 
             // Enregistrement des intercepteurs d'évènements par défaut.
-            Type modificationEventHandlerContract = typeof(IModificationEventHandler<,>).MakeGenericType(contractType, indexType);
-            Type modificationEventHandlerImplementation = typeof(ModificationEventHandler<,>).MakeGenericType(contractType, indexType);
+            Type modificationEventHandlerContract = typeof(IModificationEventHandler<,,>).MakeGenericType(implementationType, contractType, indexType);
+            Type modificationEventHandlerImplementation = typeof(ModificationEventHandler<,,>).MakeGenericType(implementationType, contractType, indexType);
             eventHandlerServiceInitializer.RegisterEventHandler(modificationEventHandlerContract, modificationEventHandlerImplementation);
             registerForIoc(modificationEventHandlerContract, modificationEventHandlerImplementation);
 
-            Type deletionEventHandlerContract = typeof(IDeletionEventHandler<,>).MakeGenericType(contractType, indexType);
-            Type deletionEventHandlerImplementation = typeof(DeletionEventHandler<,>).MakeGenericType(contractType, indexType);
+            Type deletionEventHandlerContract = typeof(IDeletionEventHandler<,,>).MakeGenericType(implementationType, contractType, indexType);
+            Type deletionEventHandlerImplementation = typeof(DeletionEventHandler<,,>).MakeGenericType(implementationType, contractType, indexType);
             eventHandlerServiceInitializer.RegisterEventHandler(deletionEventHandlerContract, deletionEventHandlerImplementation);
             registerForIoc(deletionEventHandlerContract, deletionEventHandlerImplementation);
         }

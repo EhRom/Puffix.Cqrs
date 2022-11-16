@@ -1,12 +1,12 @@
 ﻿namespace Puffix.Cqrs.Context
 {
     /// <summary>
-    /// Contrat de définition d'un contexte d'application.
+    /// Application context contract.
     /// </summary>
     public interface IApplicationContext
     {
         /// <summary>
-        /// Utilisateur courant.
+        /// Current user.
         /// </summary>
         IApplicationUser CurrentUser { get; }
     }

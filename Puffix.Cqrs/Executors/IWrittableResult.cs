@@ -3,44 +3,45 @@
 namespace Puffix.Cqrs.Executors
 {
     /// <summary>
-    /// Contrat pour la definition des résultats d'exécution (en mode écriture).
+    /// Writtable execution result contract.
     /// </summary>
     public interface IWrittableResult : IResult
     {
         /// <summary>
-        /// Spécifie si l'exécution a réussi ou non.
+        /// Set whether the command succeeds.
         /// </summary>
-        /// <param name="success">Indique si l'exécution a réussi ou non.</param>
+        /// <param name="success">Indicates whether the command succeeds.</param>
         void SetSucces(bool success);
 
         /// <summary>
-        /// Spécifie si le contexte d'execution est valide.
+        /// Set whether the context is valid.
         /// </summary>
-        /// <param name="vadidContext">Indique si le contexte d'execution est valide.</param>
+        /// <param name="vadidContext">Indicates whether the context is valid.</param>
         void SetVadidContext(bool vadidContext);
 
         /// <summary>
-        /// Spécifie si les paramètres sont valides.
+        /// Set whether the parameters are valid.
         /// </summary>
-        /// <param name="validParameters">Indique si les paramètres sont valides.</param>
+        /// <param name="validParameters">Indicates whether the parameters are valid.</param>
         void SetValidParameters(bool validParameters);
 
         /// <summary>
-        /// Ajoute une erreur dans le contexte d'exécution de l'exécution.
+        /// Add error in the command execution context.
         /// </summary>
         /// <param name="error">Error.</param>
         void AddError(Exception error);
     }
 
     /// <summary>
-    /// Contrat pour la definition des résultats de l'exécution (en mode écriture).
+    /// Writtable execution result contract.
     /// </summary>
+    /// <typeparam name="ResultT">Result type.</typeparam>
     public interface IWrittableResult<ResultT> : IWrittableResult, IResult<ResultT>
     {
         /// <summary>
-        /// Spécifie le résultat de l'exécution.
+        /// Set the execution result.
         /// </summary>
-        /// <param name="Result">Résultat de l'exécution.</param>
+        /// <param name="Result">Command result.</param>
         void SetResult(ResultT result);
     }
 }

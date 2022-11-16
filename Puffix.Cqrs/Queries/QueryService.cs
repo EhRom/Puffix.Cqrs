@@ -1,31 +1,30 @@
 ﻿using Puffix.Cqrs.Context;
 using Puffix.Cqrs.Executors;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Puffix.Cqrs.Queries
 {
     /// <summary>
-    /// Service pour le traitement des requêtes.
+    /// Query process service contract.
     /// </summary>
     public class QueryService : IQueryService
     {
         /// <summary>
-        /// Contexte de l'applcation.
+        /// Applcation context.
         /// </summary>
         private readonly IApplicationContext applicationContext;
 
         /// <summary>
-        /// Contexte d'exécution.
+        /// Execution context.
         /// </summary>
         private readonly IExecutionContext executionContext;
 
         /// <summary>
-        /// Constructeur.
+        /// Constructor.
         /// </summary>
-        /// <param name="context">Contexte de l'application.</param>
+        /// <param name="applicationContext">Applcation context.</param>
+        /// <param name="executionContext">Execution context.</param>
         public QueryService(IApplicationContext applicationContext, IExecutionContext executionContext)
         {
             this.applicationContext = applicationContext;
@@ -33,10 +32,10 @@ namespace Puffix.Cqrs.Queries
         }
 
         /// <summary>
-        /// Traitement d'une requête.
+        /// Process query.
         /// </summary>
-        /// <param name="query">Requête.</param>
-        /// <returns>Résultat de traitement de la requête.</returns>
+        /// <param name="query">Query.</param>
+        /// <returns>Query result.</returns>
         public async Task<IResult> ProcessAsync(IQuery query)
         {
             // Execution de la requête.
@@ -44,11 +43,11 @@ namespace Puffix.Cqrs.Queries
         }
 
         /// <summary>
-        /// Traitement d'une requête.
+        /// Process query.
         /// </summary>
-        /// <typeparam name="ResultT">Type pour le résultat de la requête.</typeparam>
-        /// <param name="query">Requête.</param>
-        /// <returns>Résultat de traitement de la requête.</returns>
+        /// <typeparam name="ResultT">Query result type.</typeparam>
+        /// <param name="query">Query.</param>
+        /// <returns>Query result.</returns>
         public async Task<IResult<ResultT>> ProcessAsync<ResultT>(IQuery<ResultT> query)
         {
             // Execution de la requête.
@@ -56,31 +55,31 @@ namespace Puffix.Cqrs.Queries
         }
 
         /// <summary>
-        /// Traitement de la commande.
+        /// Process query.
         /// </summary>
-        /// <typeparam name="QueryT">Type de la commande.</typeparam>
-        /// <typeparam name="ResultT">Type du résultat.</typeparam>
-        /// <param name="query">Commande.</param>
-        /// <param name="resultAccessor"></param>
-        /// <returns>Résultat d'exécution de la commande.</returns>
+        /// <typeparam name="QueryT">Query type.</typeparam>
+        /// <typeparam name="ResultT">Query result type.</typeparam>
+        /// <param name="query">Query.</param>
+        /// <param name="resultAccessor">Result accessor. Allow to extract the query result./param>
+        /// <returns>Query result.</returns>
         private async Task<IWrittableResult<ResultT>> ProcessInternal<QueryT, ResultT>(QueryT query, Func<QueryT, ResultT> resultAccessor)
             where QueryT : IQuery
         {
-            // Initialisation du résultat.
+            // Initialize the result.
             IWrittableResult<ResultT> result = new ExecutionResult<ResultT>();
 
-            // Contrôles des paramètres et du contexte.
+            // Control parameters and context.
             IChecker contextChecker = new ContextChecker(result);
             IChecker parametersChecker = new ParametersChecker(result);
             query.CheckContext(applicationContext, contextChecker);
             query.CheckParameters(parametersChecker);
 
-            // Contrôle de la possiblité d'exécuter la commande. Si non, on indique que l'exécution a échoué.
+            // Check if the query can be executed.
             if (result.ValidContext && result.ValidParameters)
             {
                 try
                 {
-                    // Exécution de la commande.
+                    // Execute the query.
                     await query.ExecuteAsync(executionContext, applicationContext);
                     result.SetSucces(true);
                 }
@@ -90,7 +89,7 @@ namespace Puffix.Cqrs.Queries
                     result.SetSucces(false);
                 }
 
-                // Si la commande a reussi, affectation du résultat.
+                // Set result on query success.
                 if (result.Success && query is IQuery<ResultT>)
                     result.SetResult(resultAccessor(query));
             }

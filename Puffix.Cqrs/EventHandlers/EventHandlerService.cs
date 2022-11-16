@@ -5,33 +5,28 @@ using System.Linq;
 namespace Puffix.Cqrs.EventHandlers
 {
     /// <summary>
-    /// Service de gestion des intercepteurs d'évènements.
+    /// Event handler management service.
     /// </summary>
     public class EventHandlerService : IEventHandlerService
     {
-        /// <summary>
-        /// Dictionnaire des informations sur les agrégats enregistrés.
-        /// </summary>
         private readonly IDictionary<Type, List<EventHandlerInfo>> eventHandlerInfoContainer;
 
         /// <summary>
-        /// Constructeur.
+        /// Constructor.
         /// </summary>
-        /// <param name="eventHandlerInfoContainer">Dictionnaire des informations sur les agrégats enregistrés.</param>
+        /// <param name="eventHandlerInfoContainer">Event handler container.</param>
         public EventHandlerService(IDictionary<Type, List<EventHandlerInfo>> eventHandlerInfoContainer)
         {
-            // Référencement du dictionnaire.
             this.eventHandlerInfoContainer = eventHandlerInfoContainer;
         }
 
         /// <summary>
-        /// Recherche des intercepteurs d'évènements associés à l'évènement.
+        /// Search for event handlers associated with the event
         /// </summary>
-        /// <param name="eventType">Type de l'évènement.</param>
-        /// <returns>Liste des intercepteurs d'évènements associés à l'évènement.</returns>
+        /// <param name="eventType">Event type.</param>
+        /// <returns>Event handlers associated with the event.</returns>
         public IEnumerable<EventHandlerInfo> GetEventHandlers(Type eventType)
         {
-            // Recherche de l'évènement et renvoi de la liste des intercepteurs inscrits, ou une liste vide.
             return eventHandlerInfoContainer.ContainsKey(eventType) ?
                         eventHandlerInfoContainer[eventType] :
                         Enumerable.Empty<EventHandlerInfo>();

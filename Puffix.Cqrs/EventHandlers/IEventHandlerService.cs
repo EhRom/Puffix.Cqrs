@@ -4,15 +4,15 @@ using System.Collections.Generic;
 namespace Puffix.Cqrs.EventHandlers
 {
     /// <summary>
-    /// Contrat du service de gestion des intercepteurs d'évènements.
+    /// Event handler management service contract.
     /// </summary>
     public interface IEventHandlerService
     {
         /// <summary>
-        /// Recherche des intercepteurs d'évènements associés à l'évènement.
+        /// Search for event handlers associated with the event
         /// </summary>
-        /// <param name="eventType">Type de l'évènement.</param>
-        /// <returns>Liste des intercepteurs d'évènements associés à l'évènement.</returns>
+        /// <param name="eventType">Event type.</param>
+        /// <returns>Event handlers associated with the event.</returns>
         IEnumerable<EventHandlerInfo> GetEventHandlers(Type eventType);
     }
 }

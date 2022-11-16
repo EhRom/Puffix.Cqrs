@@ -4,38 +4,39 @@ using System.Collections.Generic;
 namespace Puffix.Cqrs.Executors
 {
     /// <summary>
-    /// Contrat pour la definition des résultats.
+    /// Execution result contract.
     /// </summary>
     public interface IResult
     {
         /// <summary>
-        /// Indique si l'exécution a réussi ou non.
+        /// Indicates whether the command succeed.
         /// </summary>
         bool Success { get; }
 
         /// <summary>
-        /// Indique si le contexte d'execution est valide.
+        /// Indicates whether the context is valid.
         /// </summary>
         bool ValidContext { get; }
 
         /// <summary>
-        /// Indique si les paramètres sont valides.
+        /// Indicates whether the parameters are valid.
         /// </summary>
         bool ValidParameters { get; }
 
         /// <summary>
-        /// Liste des erreurs.
+        /// Command error collection.
         /// </summary>
         IEnumerable<Exception> Errors { get; }
     }
 
     /// <summary>
-    /// Contrat pour la definition des résultats.
+    /// Typed execution result contract.
     /// </summary>
+    /// <typeparam name="ResultT">Result type.</typeparam>
     public interface IResult<ResultT> : IResult
     {
         /// <summary>
-        /// Résultat.
+        /// Typed result.
         /// </summary>
         ResultT Result { get; }
     }

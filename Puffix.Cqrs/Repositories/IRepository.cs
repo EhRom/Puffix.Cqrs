@@ -6,69 +6,79 @@ using System.Threading.Tasks;
 namespace Puffix.Cqrs.Repositories
 {
     /// <summary>
-    /// Contrat de définition d'un répertoire de données.
+    /// Data repository.
     /// </summary>
-    /// <typeparam name="AggregateT">Type de l'agrégat.</typeparam>
-    /// <typeparam name="IndexT">Type de l'index.</typeparam>
-    public interface IRepository<AggregateT, IndexT> : IQueryable<AggregateT>
+    /// <typeparam name="AggregateImplementationT">Aggregate implementation type.</typeparam>
+    /// <typeparam name="AggregateT">Aggregate type.</typeparam>
+    /// <typeparam name="IndexT">Index type</typeparam>
+    public interface IRepository<AggregateImplementationT, AggregateT, IndexT> : IQueryable<AggregateImplementationT>
+        where AggregateImplementationT : class, AggregateT
         where AggregateT : IAggregate<IndexT>
         where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>
     {
         /// <summary>
-        /// Test de l'existence d'un agrégat.
+        /// Test if aggregate exists.
         /// </summary>
-        /// <param name="aggregate">Agrégat.</param>
-        /// <returns>Indique si l'agrégat existe ou non.</returns>
+        /// <param name="aggregate">Aggregate.</param>
+        /// <returns>Indicates whether the aggregate exists or not.</returns>
         Task<bool> ExistsAsync(AggregateT aggregate);
 
         /// <summary>
-        /// Test de l'existence d'un agrégat.
+        /// Test if aggregate exists.
         /// </summary>
-        /// <param name="id">Identifiant de l'agrégat.</param>
-        /// <returns>Indique si l'agrégat existe ou non.</returns>
+        /// <param name="id">Aggregate id.</param>
+        /// <returns>Indicates whether the aggregate exists or not.</returns>
         Task<bool> ExistsAsync(IndexT id);
 
         /// <summary>
-        /// Recherche d'un agrégat.
+        /// Get aggregate by id.
         /// </summary>
-        /// <param name="id">Identifiant de l'agrégat.</param>
-        /// <returns>Agrégat.</returns>
+        /// <param name="id">Aggregate id.</param>
+        /// <returns>Aggregate.</returns>
         Task<AggregateT> GetByIdAsync(IndexT id);
 
         /// <summary>
-        /// Recherche d'un agrégat.
+        /// Get aggregate by id.
         /// </summary>
-        /// <param name="id">Identifiant de l'agrégat.</param>
-        /// <returns>Agrégat ou valeur nulle à défaut.</returns>
+        /// <param name="id">Aggregate id.</param>
+        /// <returns>Aggregate or null value.</returns>
+#if NET6_0_OR_GREATER
+        Task<AggregateT?> GetByIdOrDefaultAsync(IndexT id);
+#else
         Task<AggregateT> GetByIdOrDefaultAsync(IndexT id);
+#endif
 
         /// <summary>
-        /// Génération de l'identifiant de l'agrégat.
+        /// Generate the next id.
         /// </summary>
-        /// <param name="generateNextId">Fonction de génération du prochain identifiant.</param>
-        /// <returns>Identifiant de l'agrégat.</returns>
+        /// <param name="generateNextId">Function to generate the next id.</param>
+        /// <returns>Aggregate id.</returns>
+#if NET6_0_OR_GREATER
+        Task<IndexT> GetNextAggregatetIdAsync(Func<IndexT?, IndexT> generateNextId);
+#else
         Task<IndexT> GetNextAggregatetIdAsync(Func<IndexT, IndexT> generateNextId);
+#endif
 
         /// <summary>
-        /// Création d'un aagrégat.
+        /// Create aggregate.
         /// </summary>
-        /// <param name="aggregate">Agrégat.</param>
+        /// <param name="aggregate">Aggregate.</param>
         Task CreateAsync(AggregateT aggregate);
 
         /// <summary>
-        /// Mise à jour d'un aagrégat.
+        /// Update aggregate.
         /// </summary>
-        /// <param name="aggregate">Agrégat.</param>
+        /// <param name="aggregate">Aggregate.</param>
         Task UpdateAsync(AggregateT aggregate);
 
         /// <summary>
-        /// Suppression d'un aagrégat.
+        /// Delete aggregate.
         /// </summary>
-        /// <param name="aggregate">Agrégat.</param>
+        /// <param name="aggregate">Aggregate.</param>
         Task DeleteAsync(AggregateT aggregate);
 
         /// <summary>
-        /// Sauvegarde du dépôt de données.
+        /// Save changes.
         /// </summary>
         Task SaveAsync();
     }

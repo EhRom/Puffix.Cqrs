@@ -5,25 +5,24 @@ using System.IO;
 namespace Puffix.Cqrs.Configurations
 {
     /// <summary>
-    /// Contrat pour les conteneurs de configuration.
+    /// Configuration container contract.
     /// </summary>
     public interface IApplicationConfiguration
     {
         /// <summary>
-        /// Liste des éléments de configuration.
+        /// Configuration items.
         /// </summary>
         IReadOnlyDictionary<string, IConfigurationElement> Parameters { get; }
 
         /// <summary>
-        /// Initialisation de la configuration pour le chargement.
+        /// Initialize configuration.
         /// </summary>
-        /// <param name="configurationFile">Fichier de configuration à charger.</param>
-        /// <param name="configurationFileLoader">Fichier de configuration à charger.</param>
-        /// <returns>Tâche asynchrone.</returns>
+        /// <param name="configurationFile">Configuration file path.</param>
+        /// <param name="configurationFileLoader">Function to load configuration file.</param>
         void Initialize(string configurationFile, Func<string, Stream> configurationFileLoader);
 
         /// <summary>
-        /// Contrôle du chargement de la configuration.
+        /// Ensure that configuration is loaded.
         /// </summary>
         void EnsureIsLoaded();
     }

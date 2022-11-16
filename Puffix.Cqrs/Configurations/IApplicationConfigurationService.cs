@@ -4,31 +4,32 @@ using System.IO;
 namespace Puffix.Cqrs.Configurations
 {
     /// <summary>
-    /// Contrat pour le service de gestion des configurations.
+    /// Service contract to manage configuration.
     /// </summary>
     public interface IApplicationConfigurationService
     {
         /// <summary>
-        /// Nom de la configuration par défaut.
+        /// Default configuration name.
         /// </summary>
         internal const string DEFAULT_CONFIGURATION_NAME = "default";
 
+
         /// <summary>
-        /// Recherche d'un paramètre de configuration.
+        /// Get configuration parameter.
         /// </summary>
-        /// <typeparam name="ValueT">Type de la valeur du paramètre.</typeparam>
-        /// <param name="key">Nom du paramètre.</param>
-        /// <param name="configurationName">Nom de la configuration.</param>
-        /// <returns>Valeur du paramètre.</returns>
+        /// <typeparam name="ValueT">Parameter value type.</typeparam>
+        /// <param name="key">Parameter name.</param>
+        /// <param name="configurationName">Configuration name.</param>
+        /// <returns>Typed parameter value.</returns>
         ValueT GetParameterValue<ValueT>(string key, string configurationName = DEFAULT_CONFIGURATION_NAME);
 
         /// <summary>
-        /// Enregistrement d'une nouvelle configuration.
+        /// Store new configuration set.
         /// </summary>
-        /// <typeparam name="ApplicationConfigurationT">Type de la configuration.</typeparam>
-        /// <param name="configurationFilePath">Chemin du fichier de configuration.</param>
-        /// <param name="configurationFileLoader">Fichier de configuration à charger.</param>
-        /// <param name="configurationName">Nom de la configuration.</param>
+        /// <typeparam name="ApplicationConfigurationT">Configuration type.</typeparam>
+        /// <param name="configurationFilePath">Configuration file path.</param>
+        /// <param name="configurationFileLoader">Function to load configuration file.</param>
+        /// <param name="configurationName">Configuration name.</param>
         void Register<ApplicationConfigurationT>(string configurationFilePath, Func<string, Stream> configurationFileLoader = null, string configurationName = DEFAULT_CONFIGURATION_NAME)
             where ApplicationConfigurationT : IApplicationConfiguration;
     }

@@ -6,24 +6,25 @@ using System.Threading.Tasks;
 namespace Puffix.Cqrs.Commands
 {
     /// <summary>
-    /// Service pour le traitement des commandes.
+    /// Service to process commands.
     /// </summary>
     public class CommandService : ICommandService
     {
         /// <summary>
-        /// Contexte de l'applcation.
+        /// Application context.
         /// </summary>
         private readonly IApplicationContext applicationContext;
 
         /// <summary>
-        /// Contexte d'exécution.
+        /// Execution context.
         /// </summary>
         private readonly IExecutionContext executionContext;
 
         /// <summary>
-        /// Constructeur.
+        /// Constructor.
         /// </summary>
-        /// <param name="context">Contexte de l'application.</param>
+        /// <param name="applicationContext">Application context.</param>
+        /// <param name="executionContext">Execution context.</param>
         public CommandService(IApplicationContext applicationContext, IExecutionContext executionContext)
         {
             this.applicationContext = applicationContext;
@@ -31,10 +32,10 @@ namespace Puffix.Cqrs.Commands
         }
 
         /// <summary>
-        /// Traitement d'une commande.
+        /// Process a command.
         /// </summary>
-        /// <param name="command">Commande.</param>
-        /// <returns>Résultat de traitement de la commande.</returns>
+        /// <param name="command">Command.</param>
+        /// <returns>Command process result.</returns>
         public async Task<IResult> ProcessAsync(ICommand command)
         {
             // Execution de la commande.
@@ -42,11 +43,11 @@ namespace Puffix.Cqrs.Commands
         }
 
         /// <summary>
-        /// Traitement d'une commande.
+        /// Process a command.
         /// </summary>
-        /// <typeparam name="ResultT">Type pour le résultat de la commande.</typeparam>
-        /// <param name="command">Commande.</param>
-        /// <returns>Résultat de traitement de la commande.</returns>
+        /// <typeparam name="TResult">Command result type.</typeparam>
+        /// <param name="command">Command.</param>
+        /// <returns>Command process result with typed result.</returns>
         public async Task<IResult<ResultT>> ProcessAsync<ResultT>(ICommand<ResultT> command)
         {
             // Execution de la commande.
@@ -60,31 +61,28 @@ namespace Puffix.Cqrs.Commands
         }
 
         /// <summary>
-        /// Traitement de la commande.
+        /// Process a command.
         /// </summary>
-        /// <typeparam name="CommandT">Type de la commande.</typeparam>
-        /// <typeparam name="ResultT">Type du résultat.</typeparam>
-        /// <param name="command">Commande.</param>
-        /// <param name="resultAccessor"></param>
-        /// <returns>Résultat d'exécution de la commande.</returns>
+        /// <typeparam name="CommandT">Command type.</typeparam>
+        /// <typeparam name="TResult">Command result type.</typeparam>
+        /// <param name="command">Command.</param>
+        /// <param name="resultAccessor">Function to access the result.</param>
+        /// <returns>Command process result.</returns>
         private async Task<IWrittableResult<ResultT>> ProcessInternalAsync<CommandT, ResultT>(CommandT command, Func<CommandT, ResultT> resultAccessor)
             where CommandT : ICommand
         {
-            // Initialisation du résultat.
+            // Initialize result.
             IWrittableResult<ResultT> result = new ExecutionResult<ResultT>();
 
-            // Contrôles des paramètres et du contexte.
             IChecker contextChecker = new ContextChecker(result);
             IChecker parametersChecker = new ParametersChecker(result);
             command.CheckContext(applicationContext, contextChecker);
             command.CheckParameters(parametersChecker);
 
-            // Contrôle de la possiblité d'exécuter la commande. Si non, on indique que l'exécution a échoué.
             if (result.ValidContext && result.ValidParameters)
             {
                 try
                 {
-                    // Exécution de la commande.
                     await command.ExecuteAsync(executionContext, applicationContext);
                     result.SetSucces(true);
                 }
@@ -94,7 +92,6 @@ namespace Puffix.Cqrs.Commands
                     result.SetSucces(false);
                 }
 
-                // Si la commande a reussi, affectation du résultat.
                 if (result.Success && command is ICommand<ResultT>)
                     result.SetResult(resultAccessor(command));
             }

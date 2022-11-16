@@ -3,15 +3,15 @@
 namespace Puffix.Cqrs.Models
 {
     /// <summary>
-    /// Contrat de définition d'un agrégat.
+    /// Aggregate contract.
     /// </summary>
-    /// <typeparam name="IndexT">Type de l'index.</typeparam>
+    /// <typeparam name="IndexT">Index type.</typeparam>
     public interface IAggregate<IndexT> : IIndexable<IndexT>, IAggregate
         where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>
     { }
 
     /// <summary>
-    /// Contrat de base de définition d'un  agrégat.
+    /// Base aggregate contract.
     /// </summary>
     public interface IAggregate
     { }

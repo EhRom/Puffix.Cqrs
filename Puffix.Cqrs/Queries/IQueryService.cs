@@ -4,23 +4,23 @@ using System.Threading.Tasks;
 namespace Puffix.Cqrs.Queries
 {
     /// <summary>
-    /// Contrat pour le service de traitement des requêtes.
+    /// Query process service contract.
     /// </summary>
     public interface IQueryService
     {
         /// <summary>
-        /// Traitement d'une requête.
+        /// Process query.
         /// </summary>
-        /// <param name="query">Requête.</param>
-        /// <returns>Résultat de traitement de la requête.</returns>
+        /// <param name="query">Query.</param>
+        /// <returns>Query result.</returns>
         Task<IResult> ProcessAsync(IQuery query);
 
         /// <summary>
-        /// Traitement d'une requête.
+        /// Process query.
         /// </summary>
-        /// <typeparam name="ResultT">Type pour le résultat de la requête.</typeparam>
-        /// <param name="query">Requête.</param>
-        /// <returns>Résultat de traitement de la requête.</returns>
+        /// <typeparam name="ResultT">Query result type.</typeparam>
+        /// <param name="query">Query.</param>
+        /// <returns>Query result.</returns>
         Task<IResult<ResultT>> ProcessAsync<ResultT>(IQuery<ResultT> query);
     }
 }

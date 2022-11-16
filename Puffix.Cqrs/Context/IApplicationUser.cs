@@ -5,68 +5,68 @@ namespace Puffix.Cqrs.Context
 {
 
     /// <summary>
-    /// Contrat pour la définition d'un utilisateur.
+    /// Application user contract.
     /// </summary>
     public interface IApplicationUser
     {
         /// <summary>
-        /// Identifiant de l'utilisateur.
+        /// User id.
         /// </summary>
         string Id { get; }
 
         /// <summary>
-        /// Nom de l'utilisateur.
+        /// User id.
         /// </summary>
         string Name { get; }
 
         /// <summary>
-        /// Culture de l'utilisateur.
+        /// User culture.
         /// </summary>
         CultureInfo Culture { get; }
 
         /// <summary>
-        /// Liste des droits.
+        /// Claims collection.
         /// </summary>
         IEnumerable<IClaim> Claims { get; }
 
         /// <summary>
-        /// Spécification de l'identité de l'utilisateur.
+        /// Set user identity.
         /// </summary>
-        /// <param name="id">Identifiant de l'utilisateur.</param>
-        /// <param name="name">Nom de l'utilisateur.</param>
-        /// <param name="culture">Culture de l'utilisateur.</param>
+        /// <param name="id">User id.</param>
+        /// <param name="name">User name.</param>
+        /// <param name="culture">User culture.</param>
         void SetIdentity(string id, string name, CultureInfo culture);
 
         /// <summary>
-        /// Ajout d'un droit à l'utilisateur.
+        /// Add claim.
         /// </summary>
-        /// <param name="claim">Droit.</param>
+        /// <param name="claim">Claim.</param>
         void AddClaim(IClaim claim);
 
         /// <summary>
-        /// Ajout de droits à l'utilisateur.
+        /// Add claim collection.
         /// </summary>
-        /// <param name="claims">Liste de droits.</param>
+        /// <param name="claims">Claims</param>
         void AddClaims(IEnumerable<IClaim> claims);
 
         /// <summary>
-        /// Suppression d'un droit à l'utilisateur.
+        /// Remove claim.
         /// </summary>
-        /// <param name="claim">Droit.</param>
+        /// <param name="claim">Claim.</param>
 
         void RemoveClaim(IClaim claim);
 
         /// <summary>
-        /// Suppression d'un droit à l'utilisateur.
+        /// Remove several claims.
         /// </summary>
-        /// <param name="claims">Liste de droits.</param>
+        /// <param name="claims">Claims</param>
         void RemoveClaims(IEnumerable<IClaim> claims);
 
         /// <summary>
-        /// Indique si l'utilisateur a un droit particulier.
+        /// Check if user has a claim.
         /// </summary>
-        /// <param name="claim">Droit.</param>
-        /// <returns>Indique si l'utilisateur a le droit particulier ou non.</returns>
+        /// <param name="claim">Claim.</param>
+        /// <returns>Indicates whether the user has the specified claim.</returns>
         bool Claim(IClaim claim);
     }
 }

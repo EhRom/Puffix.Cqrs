@@ -4,23 +4,23 @@ using System.Threading.Tasks;
 namespace Puffix.Cqrs.Commands
 {
     /// <summary>
-    /// Contrat pour le service de traitement des commandes.
+    /// Service to process commands contract.
     /// </summary>
     public interface ICommandService
     {
         /// <summary>
-        /// Traitement d'une commande.
+        /// Process a command.
         /// </summary>
-        /// <param name="command">Commande.</param>
-        /// <returns>Résultat de traitement de la commande.</returns>
+        /// <param name="command">Command.</param>
+        /// <returns>Command process result.</returns>
         Task<IResult> ProcessAsync(ICommand command);
 
         /// <summary>
-        /// Traitement d'une commande.
+        /// Process a command.
         /// </summary>
-        /// <typeparam name="ResultT">Type pour le résultat de la commande.</typeparam>
-        /// <param name="command">Commande.</param>
-        /// <returns>Résultat de traitement de la commande.</returns>
+        /// <typeparam name="TResult">Command result type.</typeparam>
+        /// <param name="command">Command.</param>
+        /// <returns>Command process result with typed result.</returns>
         Task<IResult<ResultT>> ProcessAsync<ResultT>(ICommand<ResultT> command);
     }
 }

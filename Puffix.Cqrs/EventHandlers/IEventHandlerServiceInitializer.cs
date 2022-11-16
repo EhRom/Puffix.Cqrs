@@ -5,26 +5,26 @@ using System.Reflection;
 namespace Puffix.Cqrs.EventHandlers
 {
     /// <summary>
-    /// Contrat du service d'initialisation du service de gestion des intercepteurs d'évènements.
+    /// Event handler initialization service contract.
     /// </summary>
     public interface IEventHandlerServiceInitializer
     {
         /// <summary>
-        /// Dictionnaire des informations sur les agrégats enregistrés.
+        /// Event hanlder information container.
         /// </summary>
         IDictionary<Type, List<EventHandlerInfo>> EventHandlerInfoContainer { get; }
 
         /// <summary>
-        /// Enregistrements des intercepteurs d'évènements.
+        /// Register events handlers.
         /// </summary>
-        /// <param name="assemblies">Liste des librairies à scanner.</param>
+        /// <param name="assemblies">Assemblies to process.</param>
         void RegisterEventHandlers(params Assembly[] assemblies);
 
         /// <summary>
-        /// Enregistrement d'un intercepteur d'évènements.
+        /// Register event handler.
         /// </summary>
-        /// <param name="contractType">Type du contrat.</param>
-        /// <param name="implementationType">Type de l'implémentation.</param>
+        /// <param name="contractType">Contract type.</param>
+        /// <param name="implementationType">Implementation type.</param>
         void RegisterEventHandler(Type contractType, Type implementationType);
     }
 }

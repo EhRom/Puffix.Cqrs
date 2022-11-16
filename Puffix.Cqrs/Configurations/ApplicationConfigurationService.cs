@@ -5,17 +5,17 @@ using System.IO;
 namespace Puffix.Cqrs.Configurations
 {
     /// <summary>
-    /// Service de gestion des configurations.
+    /// Service to manage configuration.
     /// </summary>
     public class ApplicationConfigurationService : IApplicationConfigurationService
     {
         /// <summary>
-        /// Conteneur des différentes configurations.
+        /// Configuration collection container.
         /// </summary>
         private readonly IDictionary<string, IApplicationConfiguration> configurationsContainer;
 
         /// <summary>
-        /// Constructeur.
+        /// Constructor.
         /// </summary>
         public ApplicationConfigurationService()
         {
@@ -23,21 +23,19 @@ namespace Puffix.Cqrs.Configurations
         }
 
         /// <summary>
-        /// Recherche d'un paramètre de configuration.
+        /// Get configuration parameter.
         /// </summary>
-        /// <typeparam name="ValueT">Type de la valeur du paramètre.</typeparam>
-        /// <param name="key">Nom du paramètre.</param>
-        /// <param name="configurationName">Nom de la configuration.</param>
-        /// <returns>Valeur du paramètre.</returns>
+        /// <typeparam name="ValueT">Parameter value type.</typeparam>
+        /// <param name="key">Parameter name.</param>
+        /// <param name="configurationName">Configuration name.</param>
+        /// <returns>Typed parameter value.</returns>
         public ValueT GetParameterValue<ValueT>(string key, string configurationName = IApplicationConfigurationService.DEFAULT_CONFIGURATION_NAME)
         {
-            // Contrôle de la configuration ciblée.
             if (!configurationsContainer.ContainsKey(configurationName))
                 throw new ArgumentException($"The configuration '{configurationName}' is not registered");
             IApplicationConfiguration currentConfiguration = configurationsContainer[configurationName];
             currentConfiguration.EnsureIsLoaded();
 
-            // Contrôle des paramètres.
             if (!currentConfiguration.Parameters.ContainsKey(key))
                 throw new ArgumentException($"The configuration element {key} is not founnd.");
             if (currentConfiguration.Parameters[key].GetElementType() != typeof(ValueT))
@@ -47,19 +45,18 @@ namespace Puffix.Cqrs.Configurations
         }
 
         /// <summary>
-        /// Enregistrement d'une nouvelle configuration.
+        /// Store new configuration set.
         /// </summary>
-        /// <typeparam name="ApplicationConfigurationT">Type de la configuration.</typeparam>
-        /// <param name="configurationFilePath">Chemin du fichier de configuration.</param>
-        /// <param name="configurationFileLoader">Fichier de configuration à charger.</param>
-        /// <param name="configurationName">Nom de la configuration.</param>
+        /// <typeparam name="ApplicationConfigurationT">Configuration type.</typeparam>
+        /// <param name="configurationFilePath">Configuration file path.</param>
+        /// <param name="configurationFileLoader">Function to load configuration file.</param>
+        /// <param name="configurationName">Configuration name.</param>
         public void Register<ApplicationConfigurationT>(string configurationFilePath, Func<string, Stream> configurationFileLoader = null, string configurationName = IApplicationConfigurationService.DEFAULT_CONFIGURATION_NAME)
             where ApplicationConfigurationT : IApplicationConfiguration
         {
             if (configurationsContainer.ContainsKey(configurationName))
                 throw new ArgumentException($"The configuration '{configurationName}' is already registered");
 
-            // Instanciation du conteneur et enregistrement.
             configurationsContainer[configurationName] = (ApplicationConfigurationT)Activator.CreateInstance(typeof(ApplicationConfigurationT));
             configurationsContainer[configurationName].Initialize(configurationFilePath, configurationFileLoader);
         }

@@ -10,94 +10,85 @@ using System.Threading.Tasks;
 namespace Puffix.Cqrs.EventHandlers
 {
     /// <summary>
-    /// Service d'initialisation du service de gestion des intercepteurs d'évènements.
+    /// Event handler initialization service.
     /// </summary>
     public class EventHandlerServiceInitializer : IEventHandlerServiceInitializer
     {
         private const string HANDLE_ASYNC_METHOD_NAME = "HandleAsync";
 
-        /// <summary>
-        /// Fonction pour la résolution de classes via le conteneur IoC.
-        /// </summary>
         private readonly Func<Type, object> resolver;
-
-        /// <summary>
-        /// Dictionnaire des informations sur les agrégats enregistrés.
-        /// </summary>
         private readonly IDictionary<Type, List<EventHandlerInfo>> eventHandlerInfoContainer;
 
         /// <summary>
-        /// Dictionnaire des informations sur les agrégats enregistrés.
+        /// Event hanlder information container.
         /// </summary>
         public IDictionary<Type, List<EventHandlerInfo>> EventHandlerInfoContainer => eventHandlerInfoContainer;
 
         /// <summary>
-        /// Constructeur.
+        /// Constructor.
         /// </summary>
-        /// <param name="resolver">Fonction pour la résolution de classes via le conteneur IoC.</param>
+        /// <param name="resolver">Function to resolve objects (IoC).</param>
         public EventHandlerServiceInitializer(Func<Type, object> resolver)
         {
-            // Enregistrement de l'action de résolution.
             this.resolver = resolver;
 
-            // Instanciation du dictionnaire.
             eventHandlerInfoContainer = new Dictionary<Type, List<EventHandlerInfo>>();
         }
 
         /// <summary>
-        /// Enregistrements des intercepteurs d'évènements.
+        /// Register events handlers.
         /// </summary>
-        /// <param name="assemblies">Liste des librairies à scanner.</param>
+        /// <param name="assemblies">Assemblies to process.</param>
         public void RegisterEventHandlers(params Assembly[] assemblies)
         {
-            // Enregistrement des répertoires de données.
+            // Register data repositories
             TypeTools.ProcessTypesMatchingAttribute<EventHandlerAttribute>((currentContract, currentImplementation) => RegisterEventHandler(currentContract, currentImplementation), assemblies);
         }
 
         /// <summary>
-        /// Enregistrement d'un intercepteur d'évènements.
+        /// Register event handler.
         /// </summary>
-        /// <param name="contractType">Type du contrat.</param>
-        /// <param name="implementationType">Type de l'implémentation.</param>
+        /// <param name="contractType">Contract type.</param>
+        /// <param name="implementationType">Implementation type.</param>
         public void RegisterEventHandler(Type contractType, Type implementationType)
         {
-            // Définition des prédicats de recherche des contrats d'intercepteurs d'évènements.
+            // Defines the search predicates for event handlers contracts.
             Predicate<Type>[] predicates = new Predicate<Type>[]
             {
                 type => type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(IEventHandler<>),
-                type => type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(IEventHandler<,,>)
+                type => type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(IEventHandler<,,,>)
             };
 
-            // Extraction des interfaces pour les contrats d'intercetpeurs d'évènements correspondantes aux prédicats
-            // de filtre pour les contrats de base d'intercepteurs d'évènements.
+            // Extract event handlers contracts (interfaces) matching the filter predicates for event handlers contracts.
             IEnumerable<Type> matchingEventHandlerContracts = TypeTools.GetAllInterfacesForType(contractType)
-                    // Sélection des interfaces correspondantes aux prédicats.
+                    // Select interfaces mathcing predicates
                     .SelectMany(interfaceType => predicates
                             .Select(p => new { InterfaceType = interfaceType, Predicate = p })
                             .Where(p => p.Predicate(p.InterfaceType)))
                             .Select(p => p.InterfaceType).ToList();
 
-            // Parcours des interfaces correspondantes aux prédicats, et extraction des informations.
+            // Browse the interfaces corresponding to the predicates, and extract the information.
             foreach (Type matchingContract in matchingEventHandlerContracts)
             {
-                Type agregateType, indexType;
+                Type aggregateImplementationType, agregateType, indexType;
                 Func<IAggregate, IEvent, Task> handlingFunction;
                 Type[] contractGenericArguments = matchingContract.GetGenericArguments();
                 Type eventType = contractGenericArguments.ElementAt(0);
 
-                // Création des fonctions pour l'interception des évènements, en fonction du nombre d'arguments génériques.
+                // Create functions for the interception of events, depending on the number of generic arguments.
                 if (contractGenericArguments.Count() == 1)
                 {
+                    aggregateImplementationType = null;
                     agregateType = null;
                     indexType = null;
 
-                    // Extraction de la méthode de gestion de l'évènement dans l'implémentation de l'intercepteur.
+                    // Extract the event management method in the implementation of the interceptor.
                     MethodInfo method = implementationType.GetRuntimeMethod(HANDLE_ASYNC_METHOD_NAME, new[] { eventType });
 
                     if (method == null)
                         throw new ArgumentNullException($"The method {HANDLE_ASYNC_METHOD_NAME} is not found in the {eventType} class.");
 
-                    // Définition de la fonction pour appeler la méthode de gestion de l'évènement.
+                    // Define the function to call the event handler method.
                     handlingFunction = (aggregate, handledEvent) =>
                     {
                         return (Task)method.Invoke(resolver(contractType), new object[] { handledEvent });
@@ -105,23 +96,24 @@ namespace Puffix.Cqrs.EventHandlers
                 }
                 else
                 {
-                    agregateType = contractGenericArguments.ElementAt(1);
-                    indexType = contractGenericArguments.ElementAt(2);
+                    aggregateImplementationType = contractGenericArguments.ElementAt(1);
+                    agregateType = contractGenericArguments.ElementAt(2);
+                    indexType = contractGenericArguments.ElementAt(3);
 
-                    // Extraction de la méthode de gestion de l'évènement dans l'implémentation de l'intercepteur.
+                    // Extract the event management method in the implementation of the interceptor.
                     MethodInfo method = implementationType.GetRuntimeMethod(HANDLE_ASYNC_METHOD_NAME, new[] { agregateType, eventType });
 
                     if (method == null)
                         throw new ArgumentNullException($"The method {HANDLE_ASYNC_METHOD_NAME} is not found in the {eventType} class.");
 
-                    // Définition de la fonction pour appeler la méthode de gestion de l'évènement.
+                    // Define the function to call the event handler method.
                     handlingFunction = (aggregate, handledEvent) =>
                     {
                         return (Task)method.Invoke(resolver(contractType), new object[] { aggregate, handledEvent });
                     };
                 }
 
-                // Enregistrement des informations de l'intercepteur, classé par type d'évènement.
+                // Register the interceptor's information, classified by type of event.
                 if (!eventHandlerInfoContainer.ContainsKey(eventType))
                     eventHandlerInfoContainer.Add(eventType, new List<EventHandlerInfo>());
                 eventHandlerInfoContainer[eventType].Add(new EventHandlerInfo(contractType, eventType, agregateType, indexType, handlingFunction));

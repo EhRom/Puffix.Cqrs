@@ -6,19 +6,21 @@ using System.Threading.Tasks;
 namespace Puffix.Cqrs.Events
 {
     /// <summary>
-    /// Contrat pour la définition du service de gestion des évènements.
-    /// </summary>
+    /// Contract for the services to manage events.
+    /// /// </summary>
     public interface IEventService
     {
         /// <summary>
-        /// Levée d'un évènement.
+        /// Raise event.
         /// </summary>
-        /// <typeparam name="AggregateT">Type de l'agrégat.</typeparam>
-        /// <typeparam name="IndexT">Type de l'index.</typeparam>
-        /// <param name="raisedEvent">Evènement.</param>
-        /// <param name="applicationContext">Contexte de l'application.</param>
-        /// <returns>Agrégat.</returns>
-        Task<AggregateT> Raise<AggregateT, IndexT>(IEvent<AggregateT, IndexT> raisedEvent, IApplicationContext applicationContext)
+        /// <typeparam name="AggregateImplementationT">Aggregate implementation type.</typeparam>
+        /// <typeparam name="AggregateT">Aggregate type.</typeparam>
+        /// <typeparam name="IndexT">Index type.</typeparam>
+        /// <param name="raisedEvent">Event to raise.</param>
+        /// <param name="applicationContext">Application context.</param>
+        /// <returns>Aggregate.</returns>
+        Task<AggregateT> Raise<AggregateImplementationT, AggregateT, IndexT>(IEvent<AggregateImplementationT, AggregateT, IndexT> raisedEvent, IApplicationContext applicationContext)
+            where AggregateImplementationT : class, AggregateT
             where AggregateT : IAggregate<IndexT>
             where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>;
     }

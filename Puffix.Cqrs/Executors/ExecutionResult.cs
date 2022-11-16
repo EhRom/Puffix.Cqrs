@@ -4,32 +4,32 @@ using System.Collections.Generic;
 namespace Puffix.Cqrs.Executors
 {
     /// <summary>
-    /// Resultat d'exécution.
+    /// Execution result.
     /// </summary>
     public class ExecutionResult : IWrittableResult
     {
         /// <summary>
-        /// Indique si la commande à réussi ou non.
+        /// Indicates whether the command succeed.
         /// </summary>
         public bool Success { get; private set; } = true;
 
         /// <summary>
-        /// Indique si le contexte d'execution est valide.
+        /// Indicates whether the context is valid.
         /// </summary>
         public bool ValidContext { get; private set; } = true;
 
         /// <summary>
-        /// Indique si les paramètres sont valides.
+        /// Indicates whether the parameters are valid.
         /// </summary>
         public bool ValidParameters { get; private set; } = true;
 
         /// <summary>
-        /// Liste des erreurs de la commande.
+        /// Command error collection.
         /// </summary>
         public IEnumerable<Exception> Errors { get; private set; }
 
         /// <summary>
-        /// Constructeur.
+        /// Constructor.
         /// </summary>
         public ExecutionResult()
         {
@@ -37,18 +37,18 @@ namespace Puffix.Cqrs.Executors
         }
 
         /// <summary>
-        /// Spécifie si la commande a réussi ou non.
+        /// Set whether the command succeeds.
         /// </summary>
-        /// <param name="success">Indique si la commande a réussi ou non.</param>
+        /// <param name="success">Indicates whether the command succeeds.</param>
         public void SetSucces(bool success)
         {
             Success = success;
         }
 
         /// <summary>
-        /// Spécifie si le contexte d'execution est valide.
+        /// Set whether the context is valid.
         /// </summary>
-        /// <param name="vadidContext">Indique si le contexte d'execution est valide.</param>
+        /// <param name="vadidContext">Indicates whether the context is valid.</param>
         public void SetVadidContext(bool vadidContext)
         {
             if (!vadidContext)
@@ -58,9 +58,9 @@ namespace Puffix.Cqrs.Executors
         }
 
         /// <summary>
-        /// Spécifie si les paramètres sont valides.
+        /// Set whether the parameters are valid.
         /// </summary>
-        /// <param name="validParameters">Indique si les paramètres sont valides.</param>
+        /// <param name="validParameters">Indicates whether the parameters are valid.</param>
         public void SetValidParameters(bool validParameters)
         {
             if (!validParameters)
@@ -70,7 +70,7 @@ namespace Puffix.Cqrs.Executors
         }
 
         /// <summary>
-        /// Ajoute une erreur dans le contexte d'exécution de la commande.
+        /// Add error in the command execution context.
         /// </summary>
         /// <param name="error">Error.</param>
         public void AddError(Exception error)
@@ -80,27 +80,27 @@ namespace Puffix.Cqrs.Executors
     }
 
     /// <summary>
-    /// Resultat d'exécution d'une commande.
+    /// Execution command result.
     /// </summary>
-    /// <typeparam name="ResultT">Type du résultat de la commande.</typeparam>
+    /// <typeparam name="ResultT">Command result type.</typeparam>
     public class ExecutionResult<ResultT> : ExecutionResult, IWrittableResult<ResultT>
     {
         /// <summary>
-        /// Résultat de la commande.
+        /// Command result.
         /// </summary>
         public ResultT Result { get; private set; }
 
         /// <summary>
-        /// Constructeur.
+        /// Constructor.
         /// </summary>
         public ExecutionResult()
             : base()
         { }
 
         /// <summary>
-        /// Spécifie le résultat de la commande.
+        /// Specify the command result.
         /// </summary>
-        /// <param name="Result">Résultat de la commande.</param>
+        /// <param name="Result">Command result.</param>
         public void SetResult(ResultT result)
         {
             Result = result;

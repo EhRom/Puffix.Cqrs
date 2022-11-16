@@ -3,7 +3,7 @@
 namespace Puffix.Cqrs.EventHandlers
 {
     /// <summary>
-    /// Attribut pour détecter les intercepteurs d'évènements (utilisé pour la création automatique des intercepteurs d'évènements).
+    /// Attribute to detect events hendler (used for automatic creation of events handler).
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface)]
 

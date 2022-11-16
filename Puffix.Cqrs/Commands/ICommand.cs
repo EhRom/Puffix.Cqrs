@@ -5,41 +5,41 @@ using System.Threading.Tasks;
 namespace Puffix.Cqrs.Commands
 {
     /// <summary>
-    /// Contrat pour les commandes.
+    /// Command contract.
     /// </summary>
     public interface ICommand
     {
         /// <summary>
-        /// Contrôle du contexte d'exécution de la commande.
+        /// Check context for command execution.
         /// </summary>
-        /// <param name="applicationContext">Context de l'application.</param>
-        /// <param name="contextChecker">Contrôleur de contexte.</param>
-        /// <returns>Résultat du contrôle.</returns>
+        /// <param name="applicationContext">Application context.</param>
+        /// <param name="contextChecker">Context checker.</param>
+        /// <returns>Check result.</returns>
         void CheckContext(IApplicationContext applicationContext, IChecker contextChecker);
 
         /// <summary>
-        /// Contrôle des paramètres.
+        /// Check parameters for command execution.
         /// </summary>
-        /// <param name="parametersChecker">Contrôleur de paramètres.</param>
-        /// <returns>Résultat du contrôle.</returns>
+        /// <param name="parametersChecker">Parameters checker.</param>
+        /// <returns>Check result.</returns>
         void CheckParameters(IChecker parametersChecker);
 
         /// <summary>
-        /// Execution de la commande (exécution interne).
+        /// Execution command (internal execution).
         /// </summary>
-        /// <param name="executionContext">Contexte d'exécution.</param>
-        /// <param name="applicationContext">Context de l'application.</param>
+        /// <param name="executionContext">Execution context.</param>
+        /// <param name="applicationContext">Application context.</param>
         Task ExecuteAsync(IExecutionContext executionContext, IApplicationContext applicationContext);
     }
 
     /// <summary>
-    /// Contrat pour les commandes renvoyant un résultat.
+    /// Command contract for command that returns typed result.
     /// </summary>
-    /// <typeparam name="ResultT">Type du résultat.</typeparam>
+    /// <typeparam name="ResultT">Result type.</typeparam>
     public interface ICommand<out ResultT>
     {
         /// <summary>
-        /// Résultat de la commande.
+        /// Command result.
         /// </summary>
         ResultT Result { get; }
     }

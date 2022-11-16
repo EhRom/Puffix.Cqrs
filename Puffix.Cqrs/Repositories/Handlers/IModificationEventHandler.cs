@@ -10,7 +10,8 @@ namespace Puffix.Cqrs.Repositories.Handlers
     /// </summary>
     /// <typeparam name="AggregateT">Type de l'agrégat.</typeparam>
     /// <typeparam name="IndexT">Type de l'index.</typeparam>
-    public interface IModificationEventHandler<AggregateT, IndexT> : IEventHandler<IModificationEvent<AggregateT, IndexT>, AggregateT, IndexT>
+    public interface IModificationEventHandler<AggregateImplementationT, AggregateT, IndexT> : IEventHandler<IModificationEvent<AggregateImplementationT, AggregateT, IndexT>, AggregateImplementationT, AggregateT, IndexT>
+        where AggregateImplementationT : class, AggregateT
         where AggregateT : IAggregate<IndexT>
         where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>
     { }

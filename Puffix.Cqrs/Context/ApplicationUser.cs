@@ -4,38 +4,35 @@ using System.Globalization;
 namespace Puffix.Cqrs.Context
 {
     /// <summary>
-    /// Utilisateur d'application.
+    /// Application user.
     /// </summary>
-    /// <remarks>Implémentation par défaut.</remarks>
+    /// <remarks>Default implementation.</remarks>
     public class ApplicationUser : IApplicationUser
     {
+        private readonly IDictionary<string, IClaim> claims;
+
         /// <summary>
-        /// Identifiant de l'utilisateur.
+        /// User id.
         /// </summary>
         public string Id { get; private set; }
 
         /// <summary>
-        /// Nom de l'utilisateur.
+        /// User id.
         /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Culture de l'utilisateur.
+        /// User culture.
         /// </summary>
         public CultureInfo Culture { get; private set; }
 
         /// <summary>
-        /// Liste des droits (indexés).
-        /// </summary>
-        private readonly IDictionary<string, IClaim> claims;
-
-        /// <summary>
-        /// Liste des droits.
+        /// Claims collection.
         /// </summary>
         public IEnumerable<IClaim> Claims => claims.Values;
 
         /// <summary>
-        /// Constructeur.
+        /// Constructor.
         /// </summary>
         public ApplicationUser()
         {
@@ -43,11 +40,11 @@ namespace Puffix.Cqrs.Context
         }
 
         /// <summary>
-        /// Spécification de l'identité de l'utilisateur.
+        /// Set user identity.
         /// </summary>
-        /// <param name="id">Identifiant de l'utilisateur.</param>
-        /// <param name="name">Nom de l'utilisateur.</param>
-        /// <param name="culture">Culture de l'utilisateur.</param>
+        /// <param name="id">User id.</param>
+        /// <param name="name">User name.</param>
+        /// <param name="culture">User culture.</param>
         public void SetIdentity(string id, string name, CultureInfo culture)
         {
             Id = id;
@@ -56,9 +53,9 @@ namespace Puffix.Cqrs.Context
         }
 
         /// <summary>
-        /// Ajout d'un droit.
+        /// Add claim.
         /// </summary>
-        /// <param name="claim">Droit.</param>
+        /// <param name="claim">Claim.</param>
         public void AddClaim(IClaim claim)
         {
             if (!claims.ContainsKey(claim.Id))
@@ -66,9 +63,9 @@ namespace Puffix.Cqrs.Context
         }
 
         /// <summary>
-        /// Ajout d'une liste de droits.
+        /// Add claim collection.
         /// </summary>
-        /// <param name="claims">Droits</param>
+        /// <param name="claims">Claims</param>
         public void AddClaims(IEnumerable<IClaim> claims)
         {
             foreach (IClaim claim in claims)
@@ -78,9 +75,9 @@ namespace Puffix.Cqrs.Context
         }
 
         /// <summary>
-        /// Suppression d'un droit à l'utilisateur.
+        /// Remove claim.
         /// </summary>
-        /// <param name="claim">Droit.</param>
+        /// <param name="claim">Claim.</param>
         public void RemoveClaim(IClaim claim)
         {
             if (claims.ContainsKey(claim.Id))
@@ -88,9 +85,9 @@ namespace Puffix.Cqrs.Context
         }
 
         /// <summary>
-        /// Suppression d'un droit à l'utilisateur.
+        /// Remove several claims.
         /// </summary>
-        /// <param name="claims">Liste de droits.</param>
+        /// <param name="claims">Claims</param>
         public void RemoveClaims(IEnumerable<IClaim> claims)
         {
             foreach (IClaim claim in claims)
@@ -100,10 +97,10 @@ namespace Puffix.Cqrs.Context
         }
 
         /// <summary>
-        /// Indique si l'utilisateur a un droit particulier.
+        /// Check if user has a claim.
         /// </summary>
-        /// <param name="claim">Droit.</param>
-        /// <returns>Indique si l'utilisateur a le droit particulier ou non.</returns>
+        /// <param name="claim">Claim.</param>
+        /// <returns>Indicates whether the user has the specified claim.</returns>
         public bool Claim(IClaim claim)
         {
             return claims.ContainsKey(claim.Id);

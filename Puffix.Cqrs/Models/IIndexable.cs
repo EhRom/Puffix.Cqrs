@@ -3,9 +3,9 @@
 namespace Puffix.Cqrs.Models
 {
     /// <summary>
-    /// Contrat pour un objet indexable.
+    /// Indexable object contract.
     /// </summary>
-    /// <typeparam name="IndexT">Type de l'index.</typeparam>
+    /// <typeparam name="IndexT">Index type.</typeparam>
     public interface IIndexable<IndexT>
         where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>
     {
@@ -15,9 +15,12 @@ namespace Puffix.Cqrs.Models
         IndexT Id { get; }
 
         /// <summary>
-        /// Fonction pour la génération du prochain identifiant de l'agrégat.
+        /// Function for generating the next identifier of the aggregate.
         /// </summary>
-        /// <remarks>On utilise une fonction pour mieux isoler la génération de l'instance.</remarks>
+#if NET6_0_OR_GREATER
+        Func<IndexT?, IndexT> GenerateNextId { get; }
+#else
         Func<IndexT, IndexT> GenerateNextId { get; }
+#endif
     }
 }

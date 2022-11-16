@@ -51,11 +51,12 @@ namespace Puffix.Cqrs.Repositories
         /// <typeparam name="AggregateT">Type de l'agrégat.</typeparam>
         /// <typeparam name="IndexT">Type de l'index.</typeparam>
         /// <returns>Source de données de l'agrégat.</returns>
-        public IRepository<AggregateT, IndexT> GetRepository<AggregateT, IndexT>()
+        public IRepository<AggregateImplementationT, AggregateT, IndexT> GetRepository<AggregateImplementationT, AggregateT, IndexT>()
+            where AggregateImplementationT : class, AggregateT
             where AggregateT : IAggregate<IndexT>
             where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>
         {
-            return resolver(typeof(IRepository<AggregateT, IndexT>)) as IRepository<AggregateT, IndexT>;
+            return resolver(typeof(IRepository<AggregateImplementationT, AggregateT, IndexT>)) as IRepository<AggregateImplementationT, AggregateT, IndexT>;
         }
     }
 }

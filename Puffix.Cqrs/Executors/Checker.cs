@@ -3,41 +3,36 @@
 namespace Puffix.Cqrs.Executors
 {
     /// <summary>
-    /// Contrôleur.
+    /// Base checker.
     /// </summary>
     public abstract class Checker : IChecker
     {
-        /// <summary>
-        /// Résultat de l'exécution.
-        /// </summary>
         private readonly IWrittableResult result;
 
         /// <summary>
-        /// Constructeur.
+        /// Constructor.
         /// </summary>
-        /// <param name="result">Résultat de l'exécution</param>
+        /// <param name="result">Result execution.</param>
         public Checker(IWrittableResult result)
         {
             this.result = result;
         }
 
         /// <summary>
-        /// Contrôle d'un élément.
+        /// Cehck element.
         /// </summary>
-        /// <param name="expression">Expression de contrôle (résultat).</param>
-        /// <param name="failCheckMessage">Message d'erreur en cas d'échec.</param>
-        /// <returns>Résultat du contrôle.</returns>
+        /// <param name="expression">Check expression.</param>
+        /// <param name="failCheckMessage">Error message when the check fails.</param>
         public void Check(bool expression, string failCheckMessage)
         {
             Check(expression, () => new ArgumentException(failCheckMessage));
         }
 
         /// <summary>
-        /// Contrôle d'un élément.
+        /// Cehck element.
         /// </summary>
-        /// <param name="expression">Expression de contrôle (résultat).</param>
-        /// <param name="failCheckErrorFunction">Fonction pour la construction de l'erreur en cas d'échec.</param>
-        /// <returns>Résultat du contrôle.</returns>
+        /// <param name="expression">Check expression.</param>
+        /// <param name="failCheckErrorFunction">Function to build exception to throw  when the check fails.</param>
         public void Check(bool expression, Func<Exception> failCheckErrorFunction)
         {
             if (!expression)
@@ -48,10 +43,10 @@ namespace Puffix.Cqrs.Executors
         }
 
         /// <summary>
-        /// Spécifie si l'élément est valide ou non.
+        /// Set whether the element is valid or not.
         /// </summary>
-        /// <param name="result">Résultat de l'exécution</param>
-        /// <param name="isValid">Indique si l'élément est valide ou non.</param>
+        /// <param name="result">Result.</param>
+        /// <param name="isValid">Indicates whether the element is valid or not.</param>
         protected abstract void SetValid(IWrittableResult result, bool isValid);
     }
 }

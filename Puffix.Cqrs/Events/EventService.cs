@@ -11,25 +11,18 @@ using System.Threading.Tasks;
 namespace Puffix.Cqrs.Events
 {
     /// <summary>
-    /// Service pour la gestion des évènements.
+    /// Service to manage events.
     /// </summary>
     public class EventService : IEventService
     {
-        /// <summary>
-        /// Service de gestion des sources de données.
-        /// </summary>
         private readonly IRepositoryService repositoryService;
-
-        /// <summary>
-        /// Service de gestion des intercepteurs d'évènements.
-        /// </summary>
         private readonly IEventHandlerService eventHandlerService;
 
         /// <summary>
-        /// Constructeur.
+        /// Constructor.
         /// </summary>
-        /// <param name="repositoryService">Service de gestion des sources de données.</param>
-        /// <param name="eventHandlerService">Service de gestion des intercepteurs d'évènements.</param>
+        /// <param name="repositoryService">Repository management service.</param>
+        /// <param name="eventHandlerService">Event handler management service.</param>
         public EventService(IRepositoryService repositoryService, IEventHandlerService eventHandlerService)
         {
             this.repositoryService = repositoryService;
@@ -37,50 +30,52 @@ namespace Puffix.Cqrs.Events
         }
 
         /// <summary>
-        /// Levée d'un évènement.
+        /// Raise event.
         /// </summary>
-        /// <typeparam name="AggregateT">Type de l'agrégat.</typeparam>
-        /// <typeparam name="IndexT">Type de l'index.</typeparam>
-        /// <param name="raisedEvent">Evènement.</param>
-        /// <param name="applicationContext">Contexte de l'application.</param>
-        /// <returns>Agrégat.</returns>
-        public async Task<AggregateT> Raise<AggregateT, IndexT>(IEvent<AggregateT, IndexT> raisedEvent, IApplicationContext applicationContext)
+        /// <typeparam name="AggregateImplementationT">Aggregate implementation type.</typeparam>
+        /// <typeparam name="AggregateT">Aggregate type.</typeparam>
+        /// <typeparam name="IndexT">Index type.</typeparam>
+        /// <param name="raisedEvent">Event to raise.</param>
+        /// <param name="applicationContext">Application context.</param>
+        /// <returns>Aggregate.</returns>
+        public async Task<AggregateT> Raise<AggregateImplementationT, AggregateT, IndexT>(IEvent<AggregateImplementationT, AggregateT, IndexT> raisedEvent, IApplicationContext applicationContext)
+            where AggregateImplementationT : class, AggregateT
             where AggregateT : IAggregate<IndexT>
             where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>
         {
-            // Construction des informations sur l'évènement et sauvegarde.
+            // Build and save information on the raised event.
             IEventInformation eventInformation = BuildEventInformation(raisedEvent, applicationContext.CurrentUser);
-            // TODO : stokcage des évènements.
+            // TODO : store events.
 
-            // Recherche de la source de données pour le type d'agrégat.
-            IRepository<AggregateT, IndexT> repository = repositoryService.GetRepository<AggregateT, IndexT>();
+            // Find the repository associated to the aggregate type.
+            IRepository<AggregateImplementationT, AggregateT, IndexT> repository = repositoryService.GetRepository<AggregateImplementationT, AggregateT, IndexT>();
 
-            // Recherche de l'agrégat et création s'il n'existe pas.
+            // Search for the aggregate and create it if it does not exist.
             AggregateT aggregate = await repository.GetByIdOrDefaultAsync(raisedEvent.AggregateId);
             if (aggregate == null)
             {
-                // Construction de l'agrégat.
+                // Build aggregate.
                 aggregate = BuildAggregate<AggregateT, IndexT>();
 
-                // Création d'un identifiant pour l'évènement.
+                // Create aggregate id.
                 raisedEvent.AggregateId = await repository.GetNextAggregatetIdAsync(aggregate.GenerateNextId);
             }
 
-            // Application des modifications.
+            // Apply modifications.
             raisedEvent.Apply(aggregate);
 
-            // Lancement en asynchrone de l'évènement pour prise en compte dans EventHandler.
+            // Raise asynchronous event to be handled by the event handler.
             await ActivateEventHanlders(raisedEvent, aggregate);
 
             return aggregate;
         }
 
         /// <summary>
-        /// Construction des informations sur l'évènement.
+        /// Build object to store event information.
         /// </summary>
-        /// <param name="raisedEvent">Evènement.</param>
-        /// <param name="currentUser">Utilisateur courant.</param>
-        /// <returns>Informations sur l'évènement.</returns>
+        /// <param name="raisedEvent">Raised event.</param>
+        /// <param name="currentUser">Current user.</param>
+        /// <returns>Event information.</returns>
         private IEventInformation BuildEventInformation(IEvent raisedEvent, IApplicationUser currentUser)
         {
             return new EventInformation
@@ -93,42 +88,43 @@ namespace Puffix.Cqrs.Events
         }
 
         /// <summary>
-        /// Génération d'un agrégat.
+        /// Build aggregate.
         /// </summary>
-        /// <typeparam name="AggregateT">Type de l'agrégat.</typeparam>
-        /// <typeparam name="IndexT">Type de l'index.</typeparam>
-        /// <returns>Agrégat.</returns>
+        /// <typeparam name="AggregateT">Aggregate type.</typeparam>
+        /// <typeparam name="IndexT">Index type.</typeparam>
+        /// <returns>Aggregate.</returns>
         private AggregateT BuildAggregate<AggregateT, IndexT>()
             where AggregateT : IAggregate<IndexT>
             where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>
         {
-            // Recherche des informations de l'agrégat pour en extraire l'implémentation
+            // Search for aggregate information to get implementation.
             AggregateInfo aggregateInfo = repositoryService.GetInfo<AggregateT>();
             Type implementationType = aggregateInfo.ImplementationType;
 
-            // Instanciation d'un agrégat.
+            // Instanciate aggregate.
             return (AggregateT)Activator.CreateInstance(implementationType);
         }
 
         /// <summary>
-        /// Activation des gestionnaires d'évènements.
+        /// Activate event handlers.
         /// </summary>
-        /// <param name="raisedEvent">Evènement.</param>
-        /// <param name="aggregate">Agrégat.</param>
-        /// <returns>Tache aysynchrone./returns>
-        private async Task ActivateEventHanlders<AggregateT, IndexT>(IEvent<AggregateT, IndexT> raisedEvent, AggregateT aggregate)
+        /// <param name="raisedEvent">Raised event.</param>
+        /// <param name="aggregate">Aggregate.</param>
+        /// <returns>Async task./returns>
+        private async Task ActivateEventHanlders<AggregateImplementationT, AggregateT, IndexT>(IEvent<AggregateImplementationT, AggregateT, IndexT> raisedEvent, AggregateT aggregate)
+            where AggregateImplementationT : class, AggregateT
             where AggregateT : IAggregate<IndexT>
             where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>
         {
-            // Recherche des ancêtres et interfaces de l'évènement.
+            // Search for ancestors and event interfaces.
             IEnumerable<Type> eventTypeAncestors = TypeTools.GetAllAncestorsAndInterfacesForType(raisedEvent.GetType());
 
-            // Filtre sur les EventHandlers, et récupération des actions de prise en charge.
+            // Filtering on EventHandlers, and retrieve handler actions.
             IEnumerable<Func<Task>> handlers = eventTypeAncestors
-                .SelectMany(ancestorType => eventHandlerService.GetEventHandlers(ancestorType))
-                .Select(handler => handler.GetHandleAction(aggregate, raisedEvent));
+                    .SelectMany(ancestorType => eventHandlerService.GetEventHandlers(ancestorType))
+                    .Select(handler => handler.GetHandleAction(aggregate, raisedEvent));
 
-            // Attente de la fin d'exécution des traitements de prise en charge des évènements.
+            // Waiting for the end of the event handling process.
             await Task.WhenAll(handlers.Select(handlingActions => handlingActions()));
         }
     }

@@ -5,27 +5,27 @@ using System;
 namespace Puffix.Cqrs.Events
 {
     /// <summary>
-    /// Information sur un évènement.
+    /// Event information contract.
     /// </summary>
     public interface IEventInformation : IAggregate<int>
     {
         /// <summary>
-        /// Date de l'évènement.
+        /// Event date.
         /// </summary>
         DateTime Date { get; }
 
         /// <summary>
-        /// Utilisateur.
+        /// User.
         /// </summary>
         IApplicationUser User { get; }
 
         /// <summary>
-        /// Type de l'évènement.
+        /// Event type.
         /// </summary>
         string EventType { get; }
 
         /// <summary>
-        /// Evènement.
+        /// Event.
         /// </summary>
         IEvent Event { get; }
     }

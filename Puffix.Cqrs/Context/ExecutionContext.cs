@@ -5,46 +5,35 @@ using Puffix.Cqrs.Repositories;
 namespace Puffix.Cqrs.Context
 {
     /// <summary>
-    /// Contexte d'exécution.
+    /// Execution context.
     /// </summary>
     public class ExecutionContext : IExecutionContext
     {
-        /// <summary>
-        /// Service de gestion des évènements.
-        /// </summary>
         private readonly IEventService eventService;
-
-        /// <summary>
-        /// Service pour l'accès aux répertoires de données.
-        /// </summary>
         private readonly IRepositoryService repositoryService;
+        private readonly IApplicationConfigurationService configurationService;
 
         /// <summary>
-        /// Service de gestion de la configuration de l'application.
-        /// </summary>
-        public IApplicationConfigurationService configurationService;
-
-        /// <summary>
-        /// Service de gestion des évènements.
+        /// Event management service.
         /// </summary>
         public IEventService EventService => eventService;
 
         /// <summary>
-        /// Service pour l'accès aux répertoires de données.
+        /// Repository management service.
         /// </summary>
         public IRepositoryService RepositoryService => repositoryService;
 
         /// <summary>
-        /// Service de gestion de la configuration de l'application.
+        /// Application configuration management service.
         /// </summary>
         public IApplicationConfigurationService ConfigurationService => configurationService;
 
         /// <summary>
-        /// Constructeur.
+        /// Constructor.
         /// </summary>
-        /// <param name="eventService">Service de gestion des commandes.</param>
-        /// <param name="repositoryService">Service pour l'accès aux répertoires de données.</param>
-        /// <param name="configurationService">Service de gestion de la configuration de l'application.</param>
+        /// <param name="eventService">Event management service.</param>
+        /// <param name="repositoryService">Repository management service.</param>
+        /// <param name="configurationService">Application configuration management service.</param>
         public ExecutionContext(IEventService eventService, IRepositoryService repositoryService, IApplicationConfigurationService configurationService)
         {
             this.eventService = eventService;

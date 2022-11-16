@@ -5,36 +5,35 @@ using System.IO;
 namespace Puffix.Cqrs.Configurations
 {
     /// <summary>
-    /// Conteneur de configuration de base (ne charge pas les données).
+    /// Base configuration container (does not load data).
     /// </summary>
     public abstract class ApplicationConfiguration : IApplicationConfiguration
     {
         /// <summary>
-        /// Emplacement du fichier de configuration.
+        /// Configuration file path.
         /// </summary>
         protected string configurationFile;
 
         /// <summary>
-        /// Fonction pour le chargement du fichier de configuration.
+        /// Function to load configuration file.
         /// </summary>
         protected Func<string, Stream> configurationFileLoader;
 
         /// <summary>
-        /// Conteneur de la configuration.
+        /// Configuration container.
         /// </summary>
         protected IReadOnlyDictionary<string, IConfigurationElement> parameters;
 
         /// <summary>
-        /// Liste des éléments de configuration.
+        /// Configuration items.
         /// </summary>
         public IReadOnlyDictionary<string, IConfigurationElement> Parameters => parameters;
 
         /// <summary>
-        /// Initialisation de la configuration pour le chargement.
+        /// Initialize configuration.
         /// </summary>
-        /// <param name="configurationFile">Fichier de configuration à charger.</param>
-        /// <param name="configurationFileLoader">Fichier de configuration à charger.</param>
-        /// <returns>Tâche asynchrone.</returns>
+        /// <param name="configurationFile">Configuration file path.</param>
+        /// <param name="configurationFileLoader">Function to load configuration file.</param>
         public void Initialize(string configurationFile, Func<string, Stream> configurationFileLoader)
         {
             this.configurationFile = configurationFile;
@@ -42,7 +41,7 @@ namespace Puffix.Cqrs.Configurations
         }
 
         /// <summary>
-        /// Contrôle du chargement de la configuration.
+        /// Ensure that configuration is loaded.
         /// </summary>
         public abstract void EnsureIsLoaded();
     }

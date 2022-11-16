@@ -6,42 +6,43 @@ using System.Threading.Tasks;
 namespace Puffix.Cqrs.EventHandlers
 {
     /// <summary>
-    /// Contrat pour un intercepteur d'évènements associé à un agrégat.
+    /// Event handler associated with an aggregate contract.
     /// </summary>
-    /// <typeparam name="EventT">Type de l'évènement à intercepter.</typeparam>
-    /// <typeparam name="AggregateT">Type de l'agrégat.</typeparam>
-    /// <typeparam name="IndexT">Type de l'index.</typeparam>
-    public interface IEventHandler<EventT, AggregateT, IndexT> : IEventHandler
-        where EventT : IEvent<AggregateT, IndexT>
+    /// <typeparam name="EventT">Event type.</typeparam>
+    /// <typeparam name="AggregateT">Aggregate type.</typeparam>
+    /// <typeparam name="IndexT">Index type.</typeparam>
+    public interface IEventHandler<EventT, AggregateImplementationT, AggregateT, IndexT> : IEventHandler
+        where EventT : IEvent<AggregateImplementationT, AggregateT, IndexT>
+        where AggregateImplementationT : class, AggregateT
         where AggregateT : IAggregate<IndexT>
         where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>
     {
         /// <summary>
-        /// Interception de l'évènement.
+        /// Handle event.
         /// </summary>
-        /// <param name="aggregate">Agrégat.</param>
-        /// <param name="handledEvent">Evènement intercepté.</param>
-        /// <returns>Tâche pour l'exécution asynchrone.</returns>
+        /// <param name="aggregate">Aggregate.</param>
+        /// <param name="handledEvent">Handled event.</param>
+        /// <returns>Asynchronous task.</returns>
         Task HandleAsync(AggregateT aggregate, EventT handledEvent);
     }
 
     /// <summary>
-    /// Contrat de base pour un intercepteur d'évènements simple.
+    /// Basic event handler base contract.
     /// </summary>
-    /// <typeparam name="EventT">Type de l'évènement à intercepter.</typeparam>
+    /// <typeparam name="EventT">Event type to handle.</typeparam>
     public interface IEventHandler<EventT> : IEventHandler
         where EventT : IEvent
     {
         /// <summary>
-        /// Interception de l'évènement.
+        /// Handle event.
         /// </summary>
-        /// <param name="handledEvent">Evènement intercepté.</param>
-        /// <returns>Tâche pour l'exécution asynchrone.</returns>
+        /// <param name="handledEvent">Handled event.</param>
+        /// <returns>Asynchronous task.</returns>
         Task HandleAsync(EventT handledEvent);
     }
 
     /// <summary>
-    /// Contrat de base pour un intercepteur d'évènements.
+    /// Event handler base contract.
     /// </summary>
     public interface IEventHandler
     { }

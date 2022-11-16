@@ -10,21 +10,23 @@ using System.Threading.Tasks;
 namespace Puffix.Cqrs.Basic.Repositories
 {
     /// <summary>
-    /// Fournisseur INMemory de répetoire de données.
+    /// InMemory repository provider.
     /// </summary>
-    /// <typeparam name="AggregateT">Type de l'agrégat.</typeparam>
-    /// <typeparam name="IndexT">Type de l'index.</typeparam>
-    public class InMemoryRepositoryProvider<AggregateT, IndexT> : IRepositoryProvider<AggregateT, IndexT>
+    /// <typeparam name="AggregateImplementationT">Aggregate implementation type.</typeparam>
+    /// <typeparam name="AggregateT">Aggregate type.</typeparam>
+    /// <typeparam name="IndexT">Index type</typeparam>
+    public class InMemoryRepositoryProvider<AggregateImplementationT, AggregateT, IndexT> : IRepositoryProvider<AggregateImplementationT, AggregateT, IndexT>
+        where AggregateImplementationT : class, AggregateT
         where AggregateT : IAggregate<IndexT>
         where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>
     {
         /// <summary>
-        /// Dictionnaire de données.
+        /// Data dictionary.
         /// </summary>
-        private readonly IDictionary<IndexT, AggregateT> inMemoryData = new Dictionary<IndexT, AggregateT>();
+        private readonly IDictionary<IndexT, AggregateImplementationT> inMemoryData = new Dictionary<IndexT, AggregateImplementationT>();
 
         /// <summary>
-        /// Type des éléments stockés.
+        /// Type of the elements.
         /// </summary>
         public Type ElementType => typeof(AggregateT);
 
@@ -34,66 +36,48 @@ namespace Puffix.Cqrs.Basic.Repositories
         public Expression Expression => inMemoryData.Values.AsQueryable().Expression;
 
         /// <summary>
-        /// Constructeur de requête.
+        /// Query provider.
         /// </summary>
         public IQueryProvider Provider => inMemoryData.Values.AsQueryable().Provider;
 
         /// <summary>
-        /// Test de l'existence d'un agrégat.
+        /// Test if aggregate exists.
         /// </summary>
-        /// <param name="aggregate">Agrégat.</param>
-        /// <returns>Indique si l'agrégat existe ou non.</returns>
+        /// <param name="aggregate">Aggregate.</param>
+        /// <returns>Indicates whether the aggregate exists or not.</returns>
         public Task<bool> ExistsAsync(AggregateT aggregate)
         {
             return Task.FromResult(inMemoryData.ContainsKey(aggregate.Id));
         }
 
         /// <summary>
-        /// Test de l'existence d'un agrégat.
+        /// Test if aggregate exists.
         /// </summary>
-        /// <param name="id">Identifiant de l'agrégat.</param>
-        /// <returns>Indique si l'agrégat existe ou non.</returns>
+        /// <param name="id">Aggregate id.</param>
+        /// <returns>Indicates whether the aggregate exists or not.</returns>
         public Task<bool> ExistsAsync(IndexT id)
         {
             return Task.FromResult(inMemoryData.ContainsKey(id));
         }
 
         /// <summary>
-        /// Recherche d'un agrégat.
+        /// Get aggregate by id.
         /// </summary>
-        /// <param name="id">Identifiant de l'agrégat.</param>
-        /// <returns>Agrégat.</returns>
+        /// <param name="id">Aggregate id.</param>
+        /// <returns>Aggregate.</returns>
         public Task<AggregateT> GetByIdAsync(IndexT id)
         {
             if (inMemoryData.ContainsKey(id))
-                return Task.FromResult(inMemoryData[id]);
+                return Task.FromResult((AggregateT)inMemoryData[id]);
             else
                 throw new Exception($"Element with id {id} of type {typeof(AggregateT).FullName} is not found.");
         }
-        /// <summary>
-        /// Génération de l'identifiant de l'agrégat.
-        /// </summary>
-        /// <param name="generateNextId">Fonction de génération du prochain identifiant.</param>
-        /// <returns>Identifiant de l'agrégat.</returns>
-        public Task<IndexT> GetNextAggregatetIdAsync(Func<IndexT, IndexT> generateNextId)
-        {
-            // Recherche du dernier index utilisé.
-            IndexT lastId;
-            if (inMemoryData.Count == 0)
-                lastId = default;
-            else
-                lastId = inMemoryData.Keys.Max();
-
-            // Spécification de l'index de l'agrégat.
-            IndexT nextId = generateNextId(lastId);
-            return Task.FromResult(nextId);
-        }
 
         /// <summary>
-        /// Recherche d'un agrégat.
+        /// Get aggregate by id.
         /// </summary>
-        /// <param name="id">Identifiant de l'agrégat.</param>
-        /// <returns>Agrégat ou valeur nulle à défaut.</returns>
+        /// <param name="id">Aggregate id.</param>
+        /// <returns>Aggregate or null value.</returns>
         public Task<AggregateT> GetByIdOrDefaultAsync(IndexT id)
         {
             AggregateT result;
@@ -106,55 +90,88 @@ namespace Puffix.Cqrs.Basic.Repositories
         }
 
         /// <summary>
-        /// Récupération d'un énumérateur.
+        /// Generate the next id.
         /// </summary>
-        /// <returns>Enumérateur.</returns>
-        public IEnumerator<AggregateT> GetEnumerator()
+        /// <param name="generateNextId">Function to generate the next id.</param>
+        /// <returns>Aggregate id.</returns>
+#if NET6_0_OR_GREATER
+        public  async Task<IndexT> GetNextAggregatetIdAsync(Func<IndexT?, IndexT> generateNextId)
+        {
+            await Task.CompletedTask;
+
+            IndexT lastId;
+            if (inMemoryData.Count == 0)
+                lastId = default;
+            else
+                lastId = inMemoryData.Keys.Max();
+
+            IndexT nextId = generateNextId(lastId);
+            return nextId;
+        }
+#else
+        public Task<IndexT> GetNextAggregatetIdAsync(Func<IndexT, IndexT> generateNextId)
+        {
+            IndexT lastId;
+            if (inMemoryData.Count == 0)
+                lastId = default;
+            else
+                lastId = inMemoryData.Keys.Max();
+
+            IndexT nextId = generateNextId(lastId);
+            return Task.FromResult(nextId);
+        }
+#endif
+
+        /// <summary>
+        /// Get enumerator.
+        /// </summary>
+        /// <returns>Enumerator.</returns>
+        public IEnumerator<AggregateImplementationT> GetEnumerator()
         {
             return inMemoryData.Values.GetEnumerator();
         }
 
         /// <summary>
-        /// Récupération d'un énumérateur.
+        /// Get enumerator.
         /// </summary>
-        /// <returns>Enumérateur.</returns>
+        /// <returns>Enumerator.</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return inMemoryData.Values.GetEnumerator();
         }
 
         /// <summary>
-        /// Création d'un aagrégat.
+        /// Create aggregate.
         /// </summary>
-        /// <param name="aggregate">Agrégat.</param>
+        /// <param name="aggregate">Aggregate.</param>
         public Task CreateAsync(AggregateT aggregate)
         {
             if (inMemoryData.ContainsKey(aggregate.Id))
                 throw new Exception($"Element with id {aggregate.Id} of type {typeof(AggregateT).FullName} already exists.");
 
-            inMemoryData[aggregate.Id] = aggregate;
+            inMemoryData[aggregate.Id] = (AggregateImplementationT)aggregate;
 
             return Task.FromResult(Type.Missing);
         }
 
         /// <summary>
-        /// Mise à jour d'un aagrégat.
+        /// Update aggregate.
         /// </summary>
-        /// <param name="aggregate">Agrégat.</param>
+        /// <param name="aggregate">Aggregate.</param>
         public Task UpdateAsync(AggregateT aggregate)
         {
             if (!inMemoryData.ContainsKey(aggregate.Id))
                 throw new Exception($"Element with id {aggregate.Id} of type {typeof(AggregateT).FullName} does not exist.");
 
-            inMemoryData[aggregate.Id] = aggregate;
+            inMemoryData[aggregate.Id] = (AggregateImplementationT)aggregate;
 
             return Task.FromResult(Type.Missing);
         }
 
         /// <summary>
-        /// Suppression d'un aagrégat.
+        /// Delete aggregate.
         /// </summary>
-        /// <param name="aggregate">Agrégat.</param>
+        /// <param name="aggregate">Aggregate.</param>
         public Task DeleteAsync(AggregateT aggregate)
         {
             if (!inMemoryData.ContainsKey(aggregate.Id))
@@ -166,7 +183,7 @@ namespace Puffix.Cqrs.Basic.Repositories
         }
 
         /// <summary>
-        /// Sauvegarde du dépôt de données.
+        /// Save changes.
         /// </summary>
         public Task SaveAsync()
         {

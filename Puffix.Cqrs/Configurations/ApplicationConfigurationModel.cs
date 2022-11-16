@@ -3,18 +3,17 @@
 namespace Puffix.Cqrs.Configurations
 {
     /// <summary>
-    /// Modèle pour le stockage des éléments de configuration.
+    /// Configuration item model.
     /// </summary>
-    /// <typeparam name="ConfigurationElementT">Type des éléments de configuration.</typeparam>
     public class ApplicationConfigurationModel : IApplicationConfigurationModel<ConfigurationElement>
     {
         /// <summary>
-        /// Liste des paramètres de configuration.
+        /// Configuration items.
         /// </summary>
         public IEnumerable<ConfigurationElement> Parameters { get; set; }
 
         /// <summary>
-        /// Création d'un nouveau modèle pour la stockage des éléments de configuration.
+        /// Create model to store configuration items.
         /// </summary>
         /// <returns></returns>
         public static ApplicationConfigurationModel CreateNew()

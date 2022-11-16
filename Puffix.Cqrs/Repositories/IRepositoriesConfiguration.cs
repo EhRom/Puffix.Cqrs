@@ -15,7 +15,8 @@ namespace Puffix.Cqrs.Repositories
         /// <typeparam name="IndexT">Type de l'idex.</typeparam>
         /// <param name="aggregateInfo">Informations sur l'agrégat.</param>
         /// <returns>Fournisseur de données du répertoire.</returns>
-        IRepositoryProvider<AggregateT, IndexT> GetRepositoryProvider<AggregateT, IndexT>(AggregateInfo aggregateInfo)
+        IRepositoryProvider<AggregateImplementationT, AggregateT, IndexT> GetRepositoryProvider<AggregateImplementationT, AggregateT, IndexT>(AggregateInfo aggregateInfo)
+            where AggregateImplementationT : class, AggregateT
             where AggregateT : IAggregate<IndexT>
             where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>;
     }

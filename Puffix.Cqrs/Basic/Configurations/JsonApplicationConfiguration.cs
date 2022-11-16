@@ -9,12 +9,12 @@ using System.Text.Json;
 namespace Puffix.Cqrs.Basic.Configurations
 {
     /// <summary>
-    /// Conteneur de configuration pour des paramètres stockés au format JSON.
+    /// Configuration container (JSON file).
     /// </summary>
     public class JsonApplicationConfiguration : ApplicationConfiguration
     {
         /// <summary>
-        /// S'assure que la configuration est chargée.
+        /// Ensure configuration is loaded.
         /// </summary>
         public override void EnsureIsLoaded()
         {

@@ -3,24 +3,24 @@
 namespace Puffix.Cqrs.Configurations
 {
     /// <summary>
-    /// Contrat pour la définition des éléments de configuration.
+    /// Configuration element contract.
     /// </summary>
     public interface IConfigurationElement
     {
         /// <summary>
-        /// Nom du paramètre de configuration.
+        /// Parameter name.
         /// </summary>
         string Name { get; }
 
         /// <summary>
-        /// Valeur du paramètre de configuration.
+        /// Paramter value.
         /// </summary>
         object Value { get; }
 
         /// <summary>
-        /// Type du paramètre.
+        /// Get the type pf the parameter.
         /// </summary>
-        /// <returns>Type du paramètre</returns>
+        /// <returns>Parameter type.</returns>
         Type GetElementType();
     }
 }

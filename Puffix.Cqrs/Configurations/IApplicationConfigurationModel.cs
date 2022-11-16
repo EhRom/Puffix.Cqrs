@@ -3,14 +3,14 @@
 namespace Puffix.Cqrs.Configurations
 {
     /// <summary>
-    /// Contrat de modèle pour le stockage des éléments de configuration.
+    /// Configuration item model contract.
     /// </summary>
-    /// <typeparam name="ConfigurationElementT">Type des éléments de configuration.</typeparam>
+    /// <typeparam name="ConfigurationElementT">Type of the element of the configuration.</typeparam>
     public interface IApplicationConfigurationModel<ConfigurationElementT>
         where ConfigurationElementT : IConfigurationElement
     {
         /// <summary>
-        /// Liste des paramètres de configuration.
+        /// List of paramters.
         /// </summary>
         IEnumerable<ConfigurationElementT> Parameters { get; set; }
     }

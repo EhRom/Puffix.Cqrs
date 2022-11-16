@@ -5,41 +5,41 @@ using System.Threading.Tasks;
 namespace Puffix.Cqrs.Queries
 {
     /// <summary>
-    /// Contrat pour les requêtes.
+    /// Query contract.
     /// </summary>
     public interface IQuery
     {
         /// <summary>
-        /// Contrôle du contexte d'exécution de la requête.
+        /// Check the execution context of the query.
         /// </summary>
-        /// <param name="applicationContext">Context de l'application.</param>
-        /// <param name="contextChecker">Contrôleur de contexte.</param>
-        /// <returns>Résultat du contrôle.</returns>
+        /// <param name="applicationContext">Application context.</param>
+        /// <param name="contextChecker">Context checker.</param>
+        /// <returns>Check result.</returns>
         void CheckContext(IApplicationContext applicationContext, IChecker contextChecker);
 
         /// <summary>
-        /// Contrôle des paramètres.
+        /// Check the query paramters.
         /// </summary>
-        /// <param name="parametersChecker">Contrôleur de paramètres.</param>
-        /// <returns>Résultat du contrôle.</returns>
+        /// <param name="parametersChecker">Parameters checker.</param>
+        /// <returns>Check result.</returns>
         void CheckParameters(IChecker parametersChecker);
 
         /// <summary>
-        /// Execution de la requête (exécution interne).
+        /// Query execution.
         /// </summary>
-        /// <param name="executionContext">Contexte d'exécution.</param>
-        /// <param name="applicationContext">Context de l'application.</param>
+        /// <param name="executionContext">Execution context.</param>
+        /// <param name="applicationContext">Application context.</param>
         Task ExecuteAsync(IExecutionContext executionContext, IApplicationContext applicationContext);
     }
 
     /// <summary>
-    /// Contrat pour les requêtes renvoyant un résultat.
+    /// Query with typed result contract.
     /// </summary>
-    /// <typeparam name="ResultT">Type du résultat.</typeparam>
+    /// <typeparam name="ResultT">Type of the result.</typeparam>
     public interface IQuery<out ResultT> : IQuery
     {
         /// <summary>
-        /// Résultat de la requête.
+        /// Query result.
         /// </summary>
         ResultT Result { get; }
     }

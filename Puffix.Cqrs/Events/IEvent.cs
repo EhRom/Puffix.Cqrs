@@ -4,28 +4,30 @@ using System;
 namespace Puffix.Cqrs.Events
 {
     /// <summary>
-    /// Contrat pour la définition des évènements.
+    /// Event contract.
     /// </summary>
-    /// <typeparam name="AggregateT">Type de l'agrégat.</typeparam>
-    /// <typeparam name="IndexT">Type de l'index.</typeparam>
-    public interface IEvent<AggregateT, IndexT> : IEvent
+    /// <typeparam name="AggregateImplementationT">Aggregate implementation type.</typeparam>
+    /// <typeparam name="AggregateT">Aggregate type.</typeparam>
+    /// <typeparam name="IndexT">Index type.</typeparam>
+    public interface IEvent<AggregateImplementationT, AggregateT, IndexT> : IEvent
+        where AggregateImplementationT : class, AggregateT
         where AggregateT : IAggregate<IndexT>
         where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>
     {
         /// <summary>
-        /// Identifiant de l'agrégat.
+        /// Aggregate id.
         /// </summary>
         IndexT AggregateId { get; set; }
 
         /// <summary>
-        /// Execution de l'évènement.
+        /// Execute event.
         /// </summary>
-        /// <param name="aggregate">Agrégat.</param>
+        /// <param name="aggregate">Aggregate.</param>
         void Apply(AggregateT aggregate);
     }
 
     /// <summary>
-    /// Contrat de base pour la définition des évènements.
+    /// Base event contract.
     /// </summary>
     public interface IEvent
     { }

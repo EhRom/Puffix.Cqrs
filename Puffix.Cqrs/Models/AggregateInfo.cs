@@ -3,37 +3,37 @@
 namespace Puffix.Cqrs.Models
 {
     /// <summary>
-    /// Informations sur un agrégat.
+    /// Aggregate information.
     /// </summary>
     public class AggregateInfo
     {
         /// <summary>
-        /// Type de l'agrégat.
+        /// Aggregate type.
         /// </summary>
         public Type AggregateType { get; }
 
         /// <summary>
-        /// Type de l'index.
+        /// Index type.
         /// </summary>
         public Type IndexType { get; }
 
         /// <summary>
-        /// Type de l'implémentation de l'agrégat.
+        /// Aggregate implementation type.
         /// </summary>
         public Type ImplementationType { get; }
 
         /// <summary>
-        /// Nom de la collection.
+        /// Collection name.
         /// </summary>
         public string CollectionName { get; }
 
         /// <summary>
-        /// Constructeur.
+        /// Constructor.
         /// </summary>
-        /// <param name="aggregateType">Type de l'agrégat.</param>
-        /// <param name="indexType">Type de l'index.</param>
-        /// <param name="implementationType">Type de l'implémentation de l'agrégat.</param>
-        /// <param name="collectionName">Nom de la collection.</param>
+        /// <param name="aggregateType">Aggregate type.</param>
+        /// <param name="indexType">Index type.</param>
+        /// <param name="implementationType">Aggregate implementation type.</param>
+        /// <param name="collectionName">Collection name.</param>
         public AggregateInfo(Type aggregateType, Type indexType, Type implementationType, string collectionName)
         {
             AggregateType = aggregateType;

@@ -3,32 +3,32 @@
 namespace Puffix.Cqrs.Configurations
 {
     /// <summary>
-    /// Définition des éléments de configuration.
+    /// Configuration element.
     /// </summary>
     public class ConfigurationElement : IConfigurationElement
     {
         /// <summary>
-        /// Nom du paramètre de configuration.
+        /// Parameter name.
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Valeur du paramètre de configuration.
+        /// Paramter value.
         /// </summary>
         public object Value { get; set; }
 
         /// <summary>
-        /// Type du paramètre.
+        /// Paramter type.
         /// </summary>
         public string ElementType { get; set; }
 
         /// <summary>
-        /// Création d'un nouvel élément de configuration.
+        /// Create new parameter.
         /// </summary>
-        /// <param name="name">Nom.</param>
-        /// <param name="elementValue">Valeur.</param>
+        /// <param name="name">Name.</param>
+        /// <param name="elementValue">Value.</param>
         /// <param name="elementType">Type.</param>
-        /// <returns></returns>
+        /// <returns>Configuration element.</returns>
         public static ConfigurationElement CreateNew(string name, object elementValue, Type elementType)
         {
             return new ConfigurationElement
@@ -40,9 +40,9 @@ namespace Puffix.Cqrs.Configurations
         }
 
         /// <summary>
-        /// Type du paramètre.
+        /// Get the type pf the parameter.
         /// </summary>
-        /// <returns>Type du paramètre</returns>
+        /// <returns>Parameter type.</returns>
         public Type GetElementType()
         {
             return Type.GetType(ElementType);
