@@ -1,23 +1,22 @@
 ﻿using Puffix.Cqrs.Models;
 using System;
 
-namespace Puffix.Cqrs.Repositories
+namespace Puffix.Cqrs.Repositories;
+
+/// <summary>
+/// Contrat pour la configuratrion des répertoires de données.
+/// </summary>
+public interface IRepositoriesConfiguration
 {
     /// <summary>
-    /// Contrat pour la configuratrion des répertoires de données.
+    /// Recherche de l'implémentation du fournisseur de donées du répertoire.
     /// </summary>
-    public interface IRepositoriesConfiguration
-    {
-        /// <summary>
-        /// Recherche de l'implémentation du fournisseur de donées du répertoire.
-        /// </summary>
-        /// <typeparam name="AggregateT">Type d'agrégat.</typeparam>
-        /// <typeparam name="IndexT">Type de l'idex.</typeparam>
-        /// <param name="aggregateInfo">Informations sur l'agrégat.</param>
-        /// <returns>Fournisseur de données du répertoire.</returns>
-        IRepositoryProvider<AggregateImplementationT, AggregateT, IndexT> GetRepositoryProvider<AggregateImplementationT, AggregateT, IndexT>(AggregateInfo aggregateInfo)
-            where AggregateImplementationT : class, AggregateT
-            where AggregateT : IAggregate<IndexT>
-            where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>;
-    }
+    /// <typeparam name="AggregateT">Type d'agrégat.</typeparam>
+    /// <typeparam name="IndexT">Type de l'idex.</typeparam>
+    /// <param name="aggregateInfo">Informations sur l'agrégat.</param>
+    /// <returns>Fournisseur de données du répertoire.</returns>
+    IRepositoryProvider<AggregateImplementationT, AggregateT, IndexT> GetRepositoryProvider<AggregateImplementationT, AggregateT, IndexT>(AggregateInfo aggregateInfo)
+        where AggregateImplementationT : class, AggregateT
+        where AggregateT : IAggregate<IndexT>
+        where IndexT : IComparable, IComparable<IndexT>, IEquatable<IndexT>;
 }

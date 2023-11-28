@@ -1,18 +1,17 @@
-﻿namespace Puffix.Cqrs.Context
+﻿namespace Puffix.Cqrs.Context;
+
+/// <summary>
+/// Claim contract.
+/// </summary>
+public interface IClaim
 {
     /// <summary>
-    /// Claim contract.
+    /// Claim id.
     /// </summary>
-    public interface IClaim
-    {
-        /// <summary>
-        /// Claim id.
-        /// </summary>
-        string Id { get; }
+    string Id { get; }
 
-        /// <summary>
-        /// Claim name.
-        /// </summary>
-        string Name { get; }
-    }
+    /// <summary>
+    /// Claim name.
+    /// </summary>
+    string Name { get; }
 }

@@ -1,26 +1,25 @@
 ﻿using System;
 
-namespace Puffix.Cqrs.Configurations
+namespace Puffix.Cqrs.Configurations;
+
+/// <summary>
+/// Configuration element contract.
+/// </summary>
+public interface IConfigurationElement
 {
     /// <summary>
-    /// Configuration element contract.
+    /// Parameter name.
     /// </summary>
-    public interface IConfigurationElement
-    {
-        /// <summary>
-        /// Parameter name.
-        /// </summary>
-        string Name { get; }
+    string Name { get; }
 
-        /// <summary>
-        /// Paramter value.
-        /// </summary>
-        object Value { get; }
+    /// <summary>
+    /// Paramter value.
+    /// </summary>
+    object Value { get; }
 
-        /// <summary>
-        /// Get the type pf the parameter.
-        /// </summary>
-        /// <returns>Parameter type.</returns>
-        Type GetElementType();
-    }
+    /// <summary>
+    /// Get the type pf the parameter.
+    /// </summary>
+    /// <returns>Parameter type.</returns>
+    Type GetElementType();
 }
