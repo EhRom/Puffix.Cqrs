@@ -1,23 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Authors>Puffix.io - Romain Ehret</Authors>
 		<Company>Puffix.io - Romain Ehret</Company>
 		<Description>CQRS framework implementation.</Description>
-		<Copyright>Copyright 2023 (c) Puffix / Romain Ehret. All rights reserved.</Copyright>
+		<Copyright>Copyright 2024 (c) Puffix / Romain Ehret. All rights reserved.</Copyright>
 		<PackageLicenseFile>Licence.txt</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/EhRom/Puffix.Cqrs</PackageProjectUrl>
 		<PackageIcon>icon.png</PackageIcon>
 		<RepositoryUrl>https://github.com/EhRom/Puffix.Cqrs</RepositoryUrl>
 		<PackageTags>CQRS Puffix Framework</PackageTags>
 		<PackageReleaseNotes>CQRS framework implementation.</PackageReleaseNotes>
-		<Version>3.2.1</Version>
-		<AssemblyVersion>3.2.1.0</AssemblyVersion>
-		<AssemblyFileVersion>3.2.1.0</AssemblyFileVersion>
+		<Version>3.2.2</Version>
+		<AssemblyVersion>3.2.2.0</AssemblyVersion>
+		<AssemblyFileVersion>3.2.2.0</AssemblyFileVersion>
 		<Nullable>warnings</Nullable>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
@@ -31,7 +31,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Text.Json" Version="8.0.4" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>
