@@ -15,9 +15,9 @@
 		<RepositoryUrl>https://github.com/EhRom/Puffix.Cqrs</RepositoryUrl>
 		<PackageTags>CQRS Puffix Framework</PackageTags>
 		<PackageReleaseNotes>CQRS framework implementation.</PackageReleaseNotes>
-		<Version>3.2.2</Version>
-		<AssemblyVersion>3.2.2.0</AssemblyVersion>
-		<AssemblyFileVersion>3.2.2.0</AssemblyFileVersion>
+		<Version>3.3.0</Version>
+		<AssemblyVersion>3.3.0.0</AssemblyVersion>
+		<AssemblyFileVersion>3.3.0.0</AssemblyFileVersion>
 		<Nullable>warnings</Nullable>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
@@ -31,7 +31,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Text.Json" Version="8.0.5" />
+		<PackageReference Include="System.Text.Json" Version="9.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
